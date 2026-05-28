@@ -6,9 +6,12 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import type { ShopifyProduct } from "@/lib/shopify";
 
+type FilterCategory = "ALL" | "CERAMICS" | "WOOD" | "LINEN" | "METAL";
+
 export default function CollectiePage() {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>("ALL");
 
   useEffect(() => {
     async function fetchProducts() {
@@ -27,6 +30,13 @@ export default function CollectiePage() {
 
     fetchProducts();
   }, []);
+
+  const filteredProducts = products.filter((product) => {
+    if (activeFilter === "ALL") return true;
+    return product.productType === activeFilter;
+  });
+
+  const filters: FilterCategory[] = ["ALL", "CERAMICS", "WOOD", "LINEN", "METAL"];
 
   return (
     <div className="relative overflow-hidden bg-shiro text-sumi">
@@ -58,6 +68,38 @@ export default function CollectiePage() {
           </div>
         </section>
 
+        {/* Filter Section */}
+        <section className="border-t border-slate-200/70 bg-white/70 py-12 px-6 sm:px-10 lg:px-14">
+          <div className="mx-auto max-w-7xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.0, ease: "easeOut" }}
+              className="flex flex-wrap gap-4 items-center"
+            >
+              <p className="text-xs uppercase tracking-[0.28em] text-sumi/60 font-display">Filter by:</p>
+              <div className="flex flex-wrap gap-3">
+                {filters.map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setActiveFilter(filter)}
+                    className={`px-6 py-2 rounded-full text-xs font-semibold uppercase tracking-[0.2em] transition ${
+                      activeFilter === filter
+                        ? "bg-mori text-shiro shadow-soft"
+                        : "bg-white border border-sumi/10 text-sumi hover:bg-mori/5"
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+            <p className="mt-4 text-sm text-sumi/60">
+              {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
+            </p>
+          </div>
+        </section>
+
         {/* Products Grid Section */}
         <section className="py-20 px-6 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-7xl">
@@ -65,13 +107,13 @@ export default function CollectiePage() {
               <div className="flex items-center justify-center py-20">
                 <p className="text-sumi/60 font-display uppercase tracking-[0.2em]">Loading collection...</p>
               </div>
-            ) : products.length === 0 ? (
+            ) : filteredProducts.length === 0 ? (
               <div className="flex items-center justify-center py-20">
-                <p className="text-sumi/60 font-display uppercase tracking-[0.2em]">Collection coming soon.</p>
+                <p className="text-sumi/60 font-display uppercase tracking-[0.2em]">No products found in this category.</p>
               </div>
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {products.map((product, index) => (
+                {filteredProducts.map((product, index) => (
                   <motion.article
                     key={product.id}
                     initial={{ opacity: 0, y: 40 }}

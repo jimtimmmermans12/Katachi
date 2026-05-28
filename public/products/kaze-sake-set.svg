@@ -1,0 +1,13 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="porcelainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8e3db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4ccc1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="#f7f5f2"/>
+  <circle cx="140" cy="220" r="50" fill="url(#porcelainGrad)" opacity="0.7"/>
+  <circle cx="260" cy="220" r="50" fill="url(#porcelainGrad)" opacity="0.7"/>
+  <rect x="160" y="280" width="80" height="100" fill="url(#porcelainGrad)" opacity="0.6" rx="8"/>
+  <text x="200" y="450" font-family="Georgia, serif" font-size="20" fill="#2c2c2c" text-anchor="middle" opacity="0.4">Sake Set</text>
+</svg>

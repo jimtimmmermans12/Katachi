@@ -1,0 +1,12 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ceramicGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4ccc1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b8a89a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="#f7f5f2"/>
+  <ellipse cx="200" cy="280" rx="80" ry="100" fill="url(#ceramicGrad)" opacity="0.8"/>
+  <ellipse cx="200" cy="260" rx="85" ry="35" fill="#c4b9a8" opacity="0.6"/>
+  <text x="200" y="450" font-family="Georgia, serif" font-size="20" fill="#2c2c2c" text-anchor="middle" opacity="0.4">Ceramics</text>
+</svg>

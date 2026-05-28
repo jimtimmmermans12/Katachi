@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
+import { MOCK_PRODUCTS } from "@/lib/mockProducts";
 
 const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
 const token = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN;
 
 export async function GET() {
+  // If no credentials, return mock products
   if (!domain || !token) {
-    return NextResponse.json(
-      { error: "Shopify credentials not configured" },
-      { status: 500 }
-    );
+    return NextResponse.json(MOCK_PRODUCTS);
   }
 
   try {
@@ -49,24 +48,22 @@ export async function GET() {
     );
 
     if (!response.ok) {
-      throw new Error(
-        `Shopify API responded with ${response.status}: ${response.statusText}`
-      );
+      console.warn(`Shopify API responded with ${response.status}, using mock products`);
+      return NextResponse.json(MOCK_PRODUCTS);
     }
 
     const data = await response.json();
 
     if (data.errors?.length) {
-      throw new Error(data.errors.map((e: any) => e.message).join(", "));
+      console.warn("Shopify API errors, using mock products:", data.errors);
+      return NextResponse.json(MOCK_PRODUCTS);
     }
 
     const products = data.data.products.edges.map((edge: any) => edge.node);
     return NextResponse.json(products);
   } catch (error) {
-    console.error("Failed to fetch products from Shopify:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch products" },
-      { status: 500 }
-    );
+    console.warn("Failed to fetch products from Shopify, using mock products:", error);
+    return NextResponse.json(MOCK_PRODUCTS);
   }
 }
+
