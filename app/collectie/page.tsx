@@ -1,53 +1,153 @@
-import Footer from "@/components/Footer";
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Nav from "@/components/Nav";
-import CollectionGrid from "@/components/CollectionGrid";
-import { getProducts } from "@/lib/shopify";
+import Footer from "@/components/Footer";
+import type { ShopifyProduct } from "@/lib/shopify";
 
-export const metadata = {
-  title: "The Collection — KATACHI",
-  description: "Every object is here for a reason.",
-};
+export default function CollectiePage() {
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default async function Collectie() {
-  const products = await getProducts(24);
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products");
+        if (!res.ok) throw new Error("Failed to fetch products");
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
 
   return (
-    <div className="relative bg-shiro text-sumi">
+    <div className="relative overflow-hidden bg-shiro text-sumi">
       <Nav />
 
-      <main>
-        {/* Page header */}
-        <section className="relative overflow-hidden px-6 pt-40 pb-24 sm:px-10 lg:px-14">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none"
-          >
-            <span
-              className="font-kanji text-[32rem] leading-none"
-              style={{
-                color: "rgba(44,44,44,0.055)",
-                textShadow: "0 0 40px rgba(247,245,242,0.6)",
-              }}
-            >
-              形
+      <main className="relative isolate overflow-hidden">
+        {/* Header Section */}
+        <section className="relative min-h-[50vh] px-6 pt-28 pb-16 sm:px-10 lg:px-14">
+          <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+            <span className="hero-kanji select-none text-[18rem] font-kanji leading-none opacity-10">
+              選
             </span>
           </div>
 
           <div className="relative mx-auto max-w-6xl">
-            <p className="font-body text-xs uppercase tracking-[0.38em] text-sumi/55">
-              KATACHI 形 — Collection
-            </p>
-            <h1 className="mt-7 font-display text-[clamp(4rem,12vw,9rem)] leading-[0.9] tracking-[-0.025em] text-sumi">
-              The Collection
-            </h1>
-            <p className="mt-7 font-display text-xl italic text-sumi/65 sm:text-2xl">
-              Every object is here for a reason.
-            </p>
+            <motion.div
+              initial={{ opacity: 0, y: 36 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.4, ease: "easeOut" }}
+            >
+              <p className="font-display text-xs uppercase tracking-[0.35em] text-sumi/70">選 — A curated collection</p>
+              <h1 className="mt-8 text-5xl leading-[0.95] tracking-[-0.03em] text-sumi sm:text-6xl lg:text-7xl font-display">
+                The collection
+              </h1>
+              <p className="mt-6 max-w-2xl text-base leading-8 text-sumi/80 sm:text-lg">
+                Each object is chosen for its form, craft, and timeless presence. Quiet designs that earn their place in your home.
+              </p>
+            </motion.div>
           </div>
         </section>
 
-        {/* Filter bar + grid — client component */}
-        <CollectionGrid products={products} />
+        {/* Products Grid Section */}
+        <section className="py-20 px-6 sm:px-10 lg:px-14">
+          <div className="mx-auto max-w-7xl">
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <p className="text-sumi/60 font-display uppercase tracking-[0.2em]">Loading collection...</p>
+              </div>
+            ) : products.length === 0 ? (
+              <div className="flex items-center justify-center py-20">
+                <p className="text-sumi/60 font-display uppercase tracking-[0.2em]">Collection coming soon.</p>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {products.map((product, index) => (
+                  <motion.article
+                    key={product.id}
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1.2 + index * 0.08, ease: "easeOut" }}
+                    className="group overflow-hidden rounded-[32px] product-card transition hover:shadow-lg"
+                  >
+                    {/* Product Image */}
+                    <div className="relative h-72 overflow-hidden bg-gradient-to-b from-tsuchi to-tsuchi/50">
+                      {product.featuredImage?.url ? (
+                        <img
+                          src={product.featuredImage.url}
+                          alt={product.featuredImage.altText || product.title}
+                          className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-tsuchi/30">
+                          <span className="text-sumi/20 font-kanji text-6xl">形</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Product Info */}
+                    <div className="p-6 space-y-3">
+                      <h3 className="text-xl font-display tracking-tight text-sumi line-clamp-2">
+                        {product.title}
+                      </h3>
+
+                      {product.productType && (
+                        <p className="text-xs uppercase tracking-[0.28em] text-sumi/60">
+                          {product.productType}
+                        </p>
+                      )}
+
+                      <p className="text-sm leading-6 text-sumi/75 line-clamp-2">
+                        {product.description}
+                      </p>
+
+                      <div className="pt-2 flex items-baseline justify-between">
+                        <p className="text-lg font-semibold text-sumi">
+                          €&nbsp;{Math.round(parseFloat(product.priceRange.minVariantPrice.amount))}
+                        </p>
+                        <a
+                          href={`https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/products/${product.handle}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs font-semibold uppercase tracking-[0.2em] text-mori transition hover:text-kin"
+                        >
+                          View →
+                        </a>
+                      </div>
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Footer CTA */}
+        <section className="border-t border-slate-200/70 bg-white/70 py-16 px-6 sm:px-10 lg:px-14">
+          <div className="mx-auto max-w-6xl text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+            >
+              <p className="font-display text-3xl uppercase tracking-[0.35em] text-sumi sm:text-4xl">
+                Each piece, carefully chosen.
+              </p>
+              <p className="mt-6 text-base text-sumi/75 max-w-2xl mx-auto">
+                Visit our Shopify store to explore, purchase, and bring these objects home.
+              </p>
+            </motion.div>
+          </div>
+        </section>
       </main>
 
       <Footer />
