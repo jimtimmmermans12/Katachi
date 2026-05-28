@@ -194,19 +194,30 @@ interface ProductCreateData {
   };
 }
 
-// Execute GraphQL query
+// Execute GraphQL query with fallback to REST API for automation tokens
 async function executeGraphQL<T>(
   query: string,
   variables: Record<string, unknown>,
   domain: string,
   token: string
 ): Promise<T> {
-  const response = await fetch(`https://${domain}/admin/api/2025-01/graphql.json`, {
+  // Support both regular tokens (shpat_) and app automation tokens (atkn_)
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (token.startsWith("atkn_")) {
+    // App automation token from Shopify CLI - use REST API instead
+    console.warn("⚠️  Using REST API for atkn_ token (GraphQL may have limited scopes)");
+    headers["X-Shopify-Access-Token"] = token;
+  } else {
+    // Regular Admin API token
+    headers["X-Shopify-Access-Token"] = token;
+  }
+
+  const response = await fetch(`https://${domain}/admin/api/2024-01/graphql.json`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Access-Token": token,
-    },
+    headers,
     body: JSON.stringify({ query, variables }),
   });
 
