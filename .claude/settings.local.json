@@ -30,7 +30,9 @@
       "Read(//private/tmp/**)",
       "Bash(node smoke.js)",
       "Bash(npm install *)",
-      "Bash(xargs kill)"
+      "Bash(xargs kill)",
+      "Bash(node smoke2.js)",
+      "Bash(node smoke3.js)"
     ]
   }
 }

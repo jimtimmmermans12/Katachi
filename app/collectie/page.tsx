@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import type { ShopifyProduct } from "@/lib/shopify";
-import { shopifyImg } from "@/lib/img";
+import ProductCardImage from "@/components/ProductCardImage";
 
 export default function CollectiePage() {
   const router = useRouter();
@@ -133,12 +133,7 @@ export default function CollectiePage() {
                     {/* Product Image */}
                     <div className="relative h-72 overflow-hidden bg-gradient-to-b from-tsuchi to-tsuchi/50">
                       {product.featuredImage?.url ? (
-                        <img
-                          src={shopifyImg(product.featuredImage.url, 800)}
-                          alt={product.featuredImage.altText || product.title}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                        />
+                        <ProductCardImage product={product} width={800} />
                       ) : (
                         <div className="flex h-full items-center justify-center bg-tsuchi/30">
                           <span className="text-sumi/20 font-kanji text-6xl">形</span>

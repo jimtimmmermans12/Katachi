@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductDetail from "@/components/ProductDetail";
-import { getProductByHandle } from "@/lib/shopify";
+import { getProductByHandle, getProducts } from "@/lib/shopify";
 import { shopifyImg } from "@/lib/img";
 
 type Props = {
@@ -37,11 +37,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { handle } = await params;
-  const product = await getProductByHandle(handle);
+  const [product, allProducts] = await Promise.all([
+    getProductByHandle(handle),
+    getProducts(12).catch(() => []),
+  ]);
 
   if (!product) {
     notFound();
   }
 
-  return <ProductDetail product={product} />;
+  const related = allProducts.filter((p) => p.handle !== handle).slice(0, 2);
+
+  return <ProductDetail product={product} related={related} />;
 }

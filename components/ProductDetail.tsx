@@ -53,7 +53,25 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
   const [active, setActive] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
-  useEffect(() => { setActive(0); }, [images]);
+  // Cursor-following zoom — desktop (hover-capable) only
+  const [canHover, setCanHover] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
+  const [origin, setOrigin] = useState({ x: 50, y: 50 });
+
+  useEffect(() => {
+    setCanHover(window.matchMedia('(hover: hover)').matches);
+  }, []);
+
+  useEffect(() => { setActive(0); setZoomed(false); }, [images]);
+
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!canHover) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    setOrigin({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
+  };
 
   const prev = () => setActive((i) => (i - 1 + images.length) % images.length);
   const next = () => setActive((i) => (i + 1) % images.length);
@@ -82,9 +100,19 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
 
       {/* Main image area: 4:3 container, all images stacked for crossfade */}
       <div
-        style={{ position: 'relative', width: '100%', aspectRatio: '4/3', background: '#f0ece6', overflow: 'hidden' }}
+        style={{
+          position: 'relative',
+          width: '100%',
+          aspectRatio: '4/3',
+          background: '#f0ece6',
+          overflow: 'hidden',
+          cursor: canHover ? (zoomed ? 'zoom-out' : 'zoom-in') : undefined,
+        }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
+        onMouseEnter={() => canHover && setZoomed(true)}
+        onMouseLeave={() => setZoomed(false)}
+        onMouseMove={onMouseMove}
       >
         {images.map((img, i) => (
           <img
@@ -98,8 +126,10 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
               height: '100%',
               objectFit: 'cover',
               opacity: i === active ? 1 : 0,
-              transition: 'opacity 0.3s ease',
+              transition: 'opacity 0.3s ease, transform 0.35s ease',
               zIndex: i === active ? 1 : 0,
+              transform: zoomed && i === active ? 'scale(1.8)' : 'scale(1)',
+              transformOrigin: `${origin.x}% ${origin.y}%`,
             }}
           />
         ))}
@@ -175,7 +205,13 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
 
 // ── Detail ──────────────────────────────────────────────────────────────────
 
-export default function ProductDetail({ product }: { product: ShopifyProduct }) {
+export default function ProductDetail({
+  product,
+  related = [],
+}: {
+  product: ShopifyProduct;
+  related?: ShopifyProduct[];
+}) {
   const variants = product.variants?.edges?.map((e) => e.node) ?? [];
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     variants[0]?.id ?? null,
@@ -372,6 +408,66 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
             "Objects earn their place through quiet usefulness and the beauty of honest material."
           </p>
         </div>
+
+        {/* You may also like */}
+        {related.length > 0 && (
+          <div style={{ padding: '64px 24px 80px', maxWidth: '880px', margin: '0 auto' }}>
+            <p style={{
+              fontFamily: 'var(--font-dm-sans)', fontSize: '10px',
+              letterSpacing: '0.28em', textTransform: 'uppercase',
+              color: 'rgba(44,44,44,0.45)', margin: '0 0 32px', textAlign: 'center',
+            }}>
+              You may also like
+            </p>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gap: '24px',
+            }}>
+              {related.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/collectie/${p.handle}`}
+                  style={{ textDecoration: 'none', display: 'block' }}
+                  className="group"
+                >
+                  <div style={{ aspectRatio: '4/3', background: '#e8e3db', overflow: 'hidden' }}>
+                    {p.featuredImage?.url ? (
+                      <img
+                        src={shopifyImg(p.featuredImage.url, 800)}
+                        alt={p.featuredImage.altText ?? p.title}
+                        loading="lazy"
+                        className="transition duration-500 group-hover:scale-105"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <span style={{ fontFamily: 'var(--font-noto-serif-jp)', fontSize: '2rem', color: 'rgba(44,44,44,0.1)' }}>形</span>
+                      </div>
+                    )}
+                  </div>
+                  <p style={{
+                    fontFamily: 'var(--font-cormorant-garamond), Georgia, serif',
+                    fontSize: '1.15rem', fontWeight: 400, color: '#1a1a1a',
+                    margin: '14px 0 4px', lineHeight: 1.3,
+                  }}>
+                    {p.title}
+                  </p>
+                  <p style={{
+                    fontFamily: 'var(--font-dm-sans)', fontSize: '12px',
+                    letterSpacing: '0.08em', color: 'rgba(44,44,44,0.55)', margin: 0,
+                  }}>
+                    {new Intl.NumberFormat('nl-NL', {
+                      style: 'currency',
+                      currency: p.priceRange.minVariantPrice.currencyCode,
+                      minimumFractionDigits: 2,
+                    }).format(parseFloat(p.priceRange.minVariantPrice.amount))}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Sticky add-to-cart bar — mobile only, hidden while main button is on-screen */}

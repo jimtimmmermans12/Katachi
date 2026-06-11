@@ -132,6 +132,9 @@ export default function CartDrawer() {
             padding: '24px 28px 32px',
             background: 'var(--shiro, #F7F5F2)',
           }}>
+            {/* Free shipping progress */}
+            <ShippingProgress subtotal={cart?.cost?.subtotalAmount} />
+
             {/* Subtotal */}
             <div style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
@@ -201,6 +204,50 @@ export default function CartDrawer() {
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
+
+const FREE_SHIPPING_THRESHOLD = 100;
+
+function ShippingProgress({ subtotal }: { subtotal?: { amount: string; currencyCode: string } }) {
+  if (!subtotal) return null;
+
+  const value = parseFloat(subtotal.amount);
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - value);
+  const progress = Math.min(1, value / FREE_SHIPPING_THRESHOLD);
+  const unlocked = remaining === 0;
+
+  const remainingFmt = new Intl.NumberFormat('nl-NL', {
+    style: 'currency',
+    currency: subtotal.currencyCode,
+    minimumFractionDigits: 2,
+  }).format(remaining);
+
+  return (
+    <div style={{ marginBottom: '22px' }}>
+      <p style={{
+        fontFamily: 'var(--font-dm-sans)', fontSize: '10px',
+        letterSpacing: '0.2em', textTransform: 'uppercase',
+        color: unlocked ? 'rgba(74,82,64,0.85)' : 'rgba(44,44,44,0.5)',
+        margin: '0 0 10px',
+      }}>
+        {unlocked
+          ? 'Free shipping unlocked'
+          : `${remainingFmt} away from free shipping`}
+      </p>
+      <div style={{
+        height: '2px',
+        background: 'rgba(44,44,44,0.1)',
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          height: '100%',
+          width: `${progress * 100}%`,
+          background: unlocked ? 'var(--mori, #4A5240)' : 'rgba(44,44,44,0.55)',
+          transition: 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease',
+        }} />
+      </div>
+    </div>
+  );
+}
 
 function EmptyState({ onClose }: { onClose: () => void }) {
   return (

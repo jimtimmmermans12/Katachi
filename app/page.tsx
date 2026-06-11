@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
+import NewsletterSignup from "@/components/NewsletterSignup";
+import ProductCardImage from "@/components/ProductCardImage";
 import { useCart } from "@/contexts/CartContext";
 import { shopifyImg } from "@/lib/img";
 import type { ShopifyProduct } from "@/lib/shopify";
@@ -188,13 +190,7 @@ export default function Home() {
                     onClick={() => router.push(`/collectie/${featured.handle}`)}
                   >
                     <div className="h-[380px] overflow-hidden rounded-3xl bg-tsuchi">
-                      {featured.featuredImage?.url && (
-                        <img
-                          src={shopifyImg(featured.featuredImage.url, 1000)}
-                          alt={featured.featuredImage.altText ?? featured.title}
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                        />
-                      )}
+                      <ProductCardImage product={featured} width={1000} eager />
                     </div>
                     <div className="mt-8 space-y-2">
                       <p className="text-xs uppercase tracking-[0.28em] text-sumi/50">
@@ -225,14 +221,7 @@ export default function Home() {
                       onClick={() => router.push(`/collectie/${product.handle}`)}
                     >
                       <div className="h-56 overflow-hidden rounded-3xl bg-[#f3efe9]">
-                        {product.featuredImage?.url && (
-                          <img
-                            src={shopifyImg(product.featuredImage.url, 800)}
-                            alt={product.featuredImage.altText ?? product.title}
-                            loading="lazy"
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                          />
-                        )}
+                        <ProductCardImage product={product} width={800} />
                       </div>
                       <div className="mt-6 space-y-2">
                         <p className="text-xs uppercase tracking-[0.25em] text-sumi/50">{product.productType}</p>
@@ -340,6 +329,9 @@ export default function Home() {
             </motion.div>
           </div>
         </section>
+
+        {/* ── NEWSLETTER ── */}
+        <NewsletterSignup />
 
       </main>
 
