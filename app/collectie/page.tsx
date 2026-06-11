@@ -5,13 +5,12 @@ import { motion } from "framer-motion";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import type { ShopifyProduct } from "@/lib/shopify";
-
-type FilterCategory = "ALL" | "CERAMICS" | "WOOD" | "LINEN" | "METAL";
+import { shopifyImg } from "@/lib/img";
 
 export default function CollectiePage() {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState<FilterCategory>("ALL");
+  const [activeFilter, setActiveFilter] = useState<string>("ALL");
 
   useEffect(() => {
     async function fetchProducts() {
@@ -36,7 +35,11 @@ export default function CollectiePage() {
     return product.productType.toUpperCase() === activeFilter;
   });
 
-  const filters: FilterCategory[] = ["ALL", "CERAMICS", "WOOD", "LINEN", "METAL"];
+  const categories = Array.from(
+    new Set(products.map((p) => p.productType.toUpperCase()).filter(Boolean))
+  ).sort();
+  const filters = ["ALL", ...categories];
+  const showFilters = categories.length > 1;
 
   return (
     <div className="relative overflow-hidden bg-shiro text-sumi">
@@ -71,30 +74,32 @@ export default function CollectiePage() {
         {/* Filter Section */}
         <section className="border-t border-slate-200/70 bg-white/70 py-12 px-6 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-7xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.0, ease: "easeOut" }}
-              className="flex flex-wrap gap-4 items-center"
-            >
-              <p className="text-xs uppercase tracking-[0.28em] text-sumi/60 font-display">Filter by:</p>
-              <div className="flex flex-wrap gap-3">
-                {filters.map((filter) => (
-                  <button
-                    key={filter}
-                    onClick={() => setActiveFilter(filter)}
-                    className={`px-6 py-2 rounded-full text-xs font-semibold uppercase tracking-[0.2em] transition ${
-                      activeFilter === filter
-                        ? "bg-mori text-shiro shadow-soft"
-                        : "bg-white border border-sumi/10 text-sumi hover:bg-mori/5"
-                    }`}
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-            <p className="mt-4 text-sm text-sumi/60">
+            {showFilters && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.0, ease: "easeOut" }}
+                className="flex flex-wrap gap-4 items-center"
+              >
+                <p className="text-xs uppercase tracking-[0.28em] text-sumi/60 font-display">Filter by:</p>
+                <div className="flex flex-wrap gap-3">
+                  {filters.map((filter) => (
+                    <button
+                      key={filter}
+                      onClick={() => setActiveFilter(filter)}
+                      className={`px-6 py-2 rounded-full text-xs font-semibold uppercase tracking-[0.2em] transition ${
+                        activeFilter === filter
+                          ? "bg-mori text-shiro shadow-soft"
+                          : "bg-white border border-sumi/10 text-sumi hover:bg-mori/5"
+                      }`}
+                    >
+                      {filter}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+            <p className={`text-sm text-sumi/60 ${showFilters ? "mt-4" : ""}`}>
               {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
             </p>
           </div>
@@ -126,9 +131,10 @@ export default function CollectiePage() {
                     <div className="relative h-72 overflow-hidden bg-gradient-to-b from-tsuchi to-tsuchi/50">
                       {product.featuredImage?.url ? (
                         <img
-                          src={product.featuredImage.url}
+                          src={shopifyImg(product.featuredImage.url, 800)}
                           alt={product.featuredImage.altText || product.title}
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                          loading="lazy"
+                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center bg-tsuchi/30">
@@ -184,7 +190,7 @@ export default function CollectiePage() {
                 Each piece, carefully chosen.
               </p>
               <p className="mt-6 text-base text-sumi/75 max-w-2xl mx-auto">
-                Visit our Shopify store to explore, purchase, and bring these objects home.
+                Objects selected for form, craft, and the quiet they bring to a room.
               </p>
             </motion.div>
           </div>

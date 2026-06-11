@@ -133,8 +133,7 @@ export default function Nav() {
                 ))}
               </div>
               <div className="mt-8 flex flex-col gap-3 text-sm text-sumi/75">
-                <span>Tel. +31 20 123 4567</span>
-                <span>hello@KATACHI.store</span>
+                <span>hello@katachi.store</span>
               </div>
             </div>
           </motion.div>

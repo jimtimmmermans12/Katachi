@@ -42,6 +42,7 @@ type CartContextType = {
   cart: ShopifyCart | null;
   isOpen: boolean;
   isLoading: boolean;
+  error: string | null;
   openDrawer: () => void;
   closeDrawer: () => void;
   addToCart: (variantId: string, quantity?: number) => Promise<void>;
@@ -67,6 +68,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<ShopifyCart | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Restore cart from localStorage on mount
   useEffect(() => {
@@ -81,46 +83,70 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       .catch(() => {});
   }, []);
 
-  // Create a new cart if none exists, returning its id
-  const ensureCart = useCallback(async (): Promise<string> => {
-    const stored = localStorage.getItem(CART_ID_KEY);
-    if (stored && cart) return cart.id;
-
+  // Create a brand-new cart and persist its id
+  const createFreshCart = useCallback(async (): Promise<ShopifyCart> => {
     const res = await fetch('/api/cart', { method: 'POST' });
     if (!res.ok) throw new Error('Could not create cart');
     const newCart: ShopifyCart = await res.json();
     localStorage.setItem(CART_ID_KEY, newCart.id);
     setCart(newCart);
+    return newCart;
+  }, []);
+
+  // Create a new cart if none exists, returning its id
+  const ensureCart = useCallback(async (): Promise<string> => {
+    const stored = localStorage.getItem(CART_ID_KEY);
+    if (stored && cart) return cart.id;
+    const newCart = await createFreshCart();
     return newCart.id;
-  }, [cart]);
+  }, [cart, createFreshCart]);
 
   const addToCart = useCallback(
     async (variantId: string, quantity = 1) => {
       setIsLoading(true);
-      try {
-        const cartId = await ensureCart();
+      setError(null);
+
+      const addLines = async (cartId: string): Promise<ShopifyCart> => {
         const res = await fetch('/api/cart/lines', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ cartId, variantId, quantity }),
         });
         if (!res.ok) throw new Error('Failed to add item');
-        const updated: ShopifyCart = await res.json();
+        return res.json();
+      };
+
+      try {
+        const cartId = await ensureCart();
+        let updated: ShopifyCart;
+        try {
+          updated = await addLines(cartId);
+        } catch {
+          // Stored cart may be expired (e.g., after a completed checkout) —
+          // discard it, create a fresh cart, and retry once.
+          localStorage.removeItem(CART_ID_KEY);
+          setCart(null);
+          const fresh = await createFreshCart();
+          updated = await addLines(fresh.id);
+        }
         setCart(updated);
         setIsOpen(true);
       } catch (err) {
         console.error('[cart] addToCart:', err);
+        setError('Something went wrong adding this item. Please try again.');
+        setIsOpen(true);
       } finally {
         setIsLoading(false);
       }
     },
-    [ensureCart],
+    [ensureCart, createFreshCart],
   );
 
   const removeFromCart = useCallback(
     async (lineId: string) => {
       if (!cart) return;
       setIsLoading(true);
+      setError(null);
       try {
         const res = await fetch('/api/cart/lines', {
           method: 'DELETE',
@@ -144,6 +170,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (!cart) return;
       if (quantity <= 0) { await removeFromCart(lineId); return; }
       setIsLoading(true);
+      setError(null);
       try {
         const res = await fetch('/api/cart/lines', {
           method: 'PATCH',
@@ -168,6 +195,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         cart,
         isOpen,
         isLoading,
+        error,
         openDrawer: () => setIsOpen(true),
         closeDrawer: () => setIsOpen(false),
         addToCart,

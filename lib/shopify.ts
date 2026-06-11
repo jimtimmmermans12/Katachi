@@ -11,6 +11,26 @@ export type ShopifyMoney = {
   currencyCode: string;
 };
 
+export type ShopifyGalleryImage = {
+  url: string;
+  altText: string | null;
+  width: number;
+  height: number;
+};
+
+export type ShopifyVariant = {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  price: ShopifyMoney;
+  image?: ShopifyImage | null;
+  metafield?: {
+    references: {
+      edges: { node: { image: ShopifyGalleryImage } }[];
+    };
+  } | null;
+};
+
 export type ShopifyProduct = {
   id: string;
   title: string;
@@ -31,14 +51,7 @@ export type ShopifyProduct = {
     edges: { node: ShopifyImage & { width?: number; height?: number } }[];
   };
   variants?: {
-    edges: {
-      node: {
-        id: string;
-        title: string;
-        availableForSale: boolean;
-        price: ShopifyMoney;
-      };
-    }[];
+    edges: { node: ShopifyVariant }[];
   };
 };
 
@@ -47,18 +60,26 @@ type GraphQLResponse<T> = {
   errors?: { message: string }[];
 };
 
-const STOREFRONT_API_URL = `https://${process.env.SHOPIFY_STORE_DOMAIN}/api/2025-01/graphql.json`;
+function credentials() {
+  const domain =
+    process.env.SHOPIFY_STORE_DOMAIN ??
+    process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
+  const token =
+    process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN ??
+    process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+  return { domain, token };
+}
 
 async function shopifyFetch<T>(
   query: string,
   variables?: Record<string, unknown>
 ): Promise<T> {
-  const res = await fetch(STOREFRONT_API_URL, {
+  const { domain, token } = credentials();
+  const res = await fetch(`https://${domain}/api/2025-01/graphql.json`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Shopify-Storefront-Access-Token":
-        process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!,
+      "X-Shopify-Storefront-Access-Token": token!,
     },
     body: JSON.stringify({ query, variables }),
     next: { revalidate: 60 },
@@ -110,8 +131,7 @@ type ProductsQueryData = {
 };
 
 export async function getProducts(count = 24): Promise<ShopifyProduct[]> {
-  const domain = process.env.SHOPIFY_STORE_DOMAIN;
-  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+  const { domain, token } = credentials();
 
   if (!domain || !token || token === "your_storefront_access_token_here") {
     return MOCK_PRODUCTS.slice(0, count);
@@ -173,6 +193,26 @@ const PRODUCT_BY_HANDLE_QUERY = `
               amount
               currencyCode
             }
+            image {
+              url
+              altText
+            }
+            metafield(namespace: "custom", key: "gallery") {
+              references(first: 20) {
+                edges {
+                  node {
+                    ... on MediaImage {
+                      image {
+                        url
+                        altText
+                        width
+                        height
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -187,8 +227,7 @@ type ProductByHandleData = {
 export async function getProductByHandle(
   handle: string
 ): Promise<ShopifyProduct | null> {
-  const domain = process.env.SHOPIFY_STORE_DOMAIN;
-  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+  const { domain, token } = credentials();
 
   if (!domain || !token || token === "your_storefront_access_token_here") {
     const mock = MOCK_PRODUCTS.find((p) => p.handle === handle) ?? null;

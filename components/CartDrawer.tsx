@@ -2,9 +2,10 @@
 
 import { useCart } from '@/contexts/CartContext';
 import type { CartLineItem } from '@/contexts/CartContext';
+import { shopifyImg } from '@/lib/img';
 
 export default function CartDrawer() {
-  const { cart, isOpen, isLoading, closeDrawer, removeFromCart, updateQuantity } = useCart();
+  const { cart, isOpen, isLoading, error, closeDrawer, removeFromCart, updateQuantity } = useCart();
 
   const lines = cart?.lines ?? [];
   const total = cart?.cost?.totalAmount;
@@ -87,6 +88,24 @@ export default function CartDrawer() {
             </svg>
           </button>
         </div>
+
+        {/* ── Error banner ── */}
+        {error && (
+          <div style={{
+            flexShrink: 0,
+            padding: '14px 28px',
+            background: 'rgba(176,74,63,0.07)',
+            borderBottom: '1px solid rgba(176,74,63,0.15)',
+          }}>
+            <p style={{
+              fontFamily: 'var(--font-dm-sans)', fontSize: '11px',
+              letterSpacing: '0.06em', color: 'rgba(140,58,48,0.9)',
+              margin: 0, lineHeight: 1.5,
+            }}>
+              {error}
+            </p>
+          </div>
+        )}
 
         {/* ── Line items ── */}
         <div style={{ flex: 1, overflowY: 'auto' }}>
@@ -172,7 +191,7 @@ export default function CartDrawer() {
               letterSpacing: '0.18em', textTransform: 'uppercase',
               color: 'rgba(44,44,44,0.25)',
             }}>
-              Gratis verzending vanaf € 100 · Retourneren binnen 30 dagen
+              Free shipping from €100 · 30-day returns
             </p>
           </div>
         )}
@@ -258,8 +277,9 @@ function LineItem({
       }}>
         {imgSrc ? (
           <img
-            src={imgSrc}
+            src={shopifyImg(imgSrc, 160)}
             alt={line.merchandise.product.title}
+            loading="lazy"
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
         ) : (

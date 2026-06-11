@@ -26,7 +26,7 @@ export default function Footer() {
 
         <div className="space-y-4 text-sm leading-7 text-sumi/80">
           <p className="font-display text-sm uppercase tracking-[0.25em] text-sumi/90">Contact</p>
-          <p>hello@KATACHI.store</p>
+          <p>hello@katachi.store</p>
           <p>Prinsengracht 245</p>
           <p>Amsterdam, NL</p>
         </div>

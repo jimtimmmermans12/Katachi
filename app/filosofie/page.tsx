@@ -141,7 +141,7 @@ export default function Filosofie() {
             >
               <a
                 href="/collectie"
-                className="inline-flex min-w-[220px] items-center justify-center bg-[#4A5240] px-12 py-4 font-body text-sm font-semibold uppercase tracking-[0.22em] text-shiro transition-colors duration-200 hover:bg-[#3f4535]"
+                className="inline-flex min-w-[220px] items-center justify-center bg-[#2C2C2C] px-12 py-4 font-body text-sm font-semibold uppercase tracking-[0.22em] text-shiro transition-colors duration-200 hover:bg-[#1a1a1a]"
               >
                 View the collection
               </a>

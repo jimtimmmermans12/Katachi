@@ -6,7 +6,26 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(/usr/bin/git --version)",
-      "Bash(/usr/bin/git init *)"
+      "Bash(/usr/bin/git init *)",
+      "Bash(npx vercel *)",
+      "Bash(git *)",
+      "Bash(npx tsc *)",
+      "WebFetch(domain:katachi-blond.vercel.app)",
+      "Bash(curl -s https://katachi-blond.vercel.app)",
+      "Bash(curl -s https://katachi-blond.vercel.app/collectie)",
+      "Bash(curl -s https://katachi-blond.vercel.app/privacy)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://katachi-blond.vercel.app/collection)",
+      "Bash(curl -s https://katachi-blond.vercel.app/api/products)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://katachi-blond.vercel.app/sitemap.xml)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://katachi-blond.vercel.app/robots.txt)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://katachi-blond.vercel.app/favicon.ico)",
+      "Bash(npm run *)",
+      "Bash(curl -s https://katachi-blond.vercel.app/collectie/kaze-sake-set)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\" https://katachi-blond.vercel.app/collection)",
+      "Bash(curl -s https://katachi-blond.vercel.app/sitemap.xml)",
+      "Bash(curl -s https://katachi-blond.vercel.app/robots.txt)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://katachi-blond.vercel.app/collectie/does-not-exist)"
     ]
   }
 }

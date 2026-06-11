@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import { useCart } from "@/contexts/CartContext";
+import { shopifyImg } from "@/lib/img";
 import type { ShopifyProduct } from "@/lib/shopify";
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1610701596061-2ecf227e85b2?w=1200&q=80";
@@ -179,7 +180,7 @@ export default function Home() {
                     <div className="h-[380px] overflow-hidden rounded-3xl bg-tsuchi">
                       {featured.featuredImage?.url && (
                         <img
-                          src={featured.featuredImage.url}
+                          src={shopifyImg(featured.featuredImage.url, 1000)}
                           alt={featured.featuredImage.altText ?? featured.title}
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                         />
@@ -216,8 +217,9 @@ export default function Home() {
                       <div className="h-56 overflow-hidden rounded-3xl bg-[#f3efe9]">
                         {product.featuredImage?.url && (
                           <img
-                            src={product.featuredImage.url}
+                            src={shopifyImg(product.featuredImage.url, 800)}
                             alt={product.featuredImage.altText ?? product.title}
+                            loading="lazy"
                             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                           />
                         )}

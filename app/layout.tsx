@@ -21,10 +21,36 @@ const notoSerifJp = Noto_Serif_JP({
   display: "swap",
 });
 
+const SITE_URL = "https://katachi-blond.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "KATACHI — Minimal Japanese Homeware",
   description:
     "Japanese-inspired minimalist homeware with calm editorial design and slow, intentional living.",
+  openGraph: {
+    siteName: "KATACHI",
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    title: "KATACHI — Minimal Japanese Homeware",
+    description:
+      "Japanese-inspired minimalist homeware with calm editorial design and slow, intentional living.",
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1610701596061-2ecf227e85b2?w=1200&q=80",
+        width: 1200,
+        height: 800,
+        alt: "KATACHI — Japanese ceramics for the intentional home",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KATACHI — Minimal Japanese Homeware",
+    description:
+      "Japanese-inspired minimalist homeware with calm editorial design and slow, intentional living.",
+  },
 };
 
 export default function RootLayout({
