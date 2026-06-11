@@ -109,18 +109,9 @@ export default function Journal() {
                   <p className="mt-5 text-base leading-[1.85] text-sumi/70">
                     {article.description}
                   </p>
-                  <a
-                    href="#"
-                    className="group mt-7 inline-flex items-center gap-2 font-body text-[11px] uppercase tracking-[0.28em] text-mori transition-colors duration-200 hover:text-kin"
-                  >
-                    Read more
-                    <span
-                      aria-hidden
-                      className="transition-transform duration-200 group-hover:translate-x-1"
-                    >
-                      →
-                    </span>
-                  </a>
+                  <p className="mt-7 font-body text-[11px] uppercase tracking-[0.28em] text-sumi/30">
+                    Coming soon
+                  </p>
                 </motion.article>
               ))}
             </div>

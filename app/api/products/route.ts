@@ -39,6 +39,19 @@ export async function GET() {
                     url
                     altText
                   }
+                  variants(first: 3) {
+                    edges {
+                      node {
+                        id
+                        title
+                        availableForSale
+                        price {
+                          amount
+                          currencyCode
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }

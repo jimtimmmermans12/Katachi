@@ -12,6 +12,19 @@ const image = (path: string): any => ({
   altText: path.split("/").pop()?.replace(".svg", ""),
 });
 
+const variant = (n: number, amount: string): NonNullable<ShopifyProduct["variants"]> => ({
+  edges: [
+    {
+      node: {
+        id: `gid://shopify/ProductVariant/${n}`,
+        title: "Default Title",
+        availableForSale: true,
+        price: { amount, currencyCode: "EUR" },
+      },
+    },
+  ],
+});
+
 export const MOCK_PRODUCTS: ShopifyProduct[] = [
   {
     id: "gid://shopify/Product/1",
@@ -21,6 +34,7 @@ export const MOCK_PRODUCTS: ShopifyProduct[] = [
     productType: "Ceramics",
     priceRange: price("98.00"),
     featuredImage: image("/products/hikari-miska.svg"),
+    variants: variant(1, "98.00"),
   },
   {
     id: "gid://shopify/Product/2",
@@ -30,6 +44,7 @@ export const MOCK_PRODUCTS: ShopifyProduct[] = [
     productType: "Ceramics",
     priceRange: price("124.00"),
     featuredImage: image("/products/kaze-sake-set.svg"),
+    variants: variant(2, "124.00"),
   },
   {
     id: "gid://shopify/Product/3",
@@ -39,6 +54,7 @@ export const MOCK_PRODUCTS: ShopifyProduct[] = [
     productType: "Ceramics",
     priceRange: price("89.00"),
     featuredImage: image("/products/tsuki-schenkkan.svg"),
+    variants: variant(3, "89.00"),
   },
   {
     id: "gid://shopify/Product/4",
@@ -48,6 +64,7 @@ export const MOCK_PRODUCTS: ShopifyProduct[] = [
     productType: "Wood",
     priceRange: price("84.00"),
     featuredImage: image("/products/sumi-tray.svg"),
+    variants: variant(4, "84.00"),
   },
   {
     id: "gid://shopify/Product/5",
@@ -57,6 +74,7 @@ export const MOCK_PRODUCTS: ShopifyProduct[] = [
     productType: "Wood",
     priceRange: price("67.00"),
     featuredImage: image("/products/shizen-schaal.svg"),
+    variants: variant(5, "67.00"),
   },
   {
     id: "gid://shopify/Product/6",
@@ -66,6 +84,7 @@ export const MOCK_PRODUCTS: ShopifyProduct[] = [
     productType: "Linen",
     priceRange: price("38.00"),
     featuredImage: image("/products/ori-placemat.svg"),
+    variants: variant(6, "38.00"),
   },
   {
     id: "gid://shopify/Product/7",
@@ -75,6 +94,7 @@ export const MOCK_PRODUCTS: ShopifyProduct[] = [
     productType: "Metal",
     priceRange: price("112.00"),
     featuredImage: image("/products/nami-bestek.svg"),
+    variants: variant(7, "112.00"),
   },
   {
     id: "gid://shopify/Product/8",
@@ -84,5 +104,6 @@ export const MOCK_PRODUCTS: ShopifyProduct[] = [
     productType: "Metal",
     priceRange: price("74.00"),
     featuredImage: image("/products/furo-kaarsenhouder.svg"),
+    variants: variant(8, "74.00"),
   },
 ];

@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useCart } from "@/contexts/CartContext";
 
 const navItems = [
   { label: "Collection", href: "/collectie" },
@@ -13,6 +14,8 @@ const navItems = [
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { cart, openDrawer } = useCart();
+  const itemCount = cart?.totalQuantity ?? 0;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.pageYOffset > 20);
@@ -32,11 +35,13 @@ export default function Nav() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+        {/* Logo */}
         <a href="/" className="flex items-center gap-2 font-display text-base uppercase tracking-[0.25em] text-sumi">
           <span>KATACHI</span>
           <span className="text-kin">形</span>
         </a>
 
+        {/* Desktop nav */}
         <nav className="hidden items-center gap-10 md:flex">
           {navItems.map((item) => (
             <a
@@ -49,18 +54,55 @@ export default function Nav() {
           ))}
         </nav>
 
-        <button
-          type="button"
-          aria-label="Open menu"
-          onClick={() => setIsOpen((value) => !value)}
-          className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-current text-sumi transition hover:bg-mori/5 md:hidden"
-        >
-          <span className="absolute h-0.5 w-6 rotate-0 bg-current transition duration-300" />
-          <span className="absolute h-0.5 w-6 bg-current transition duration-300" />
-          <span className="absolute h-0.5 w-6 translate-y-2 bg-current transition duration-300" />
-        </button>
+        {/* Right: cart icon + mobile hamburger */}
+        <div className="flex items-center gap-4">
+          {/* Cart icon — visible on all breakpoints */}
+          <button
+            type="button"
+            aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
+            onClick={openDrawer}
+            style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', padding: '6px', display: 'flex', alignItems: 'center', color: 'var(--sumi, #2C2C2C)' }}
+          >
+            {/* Bag icon */}
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 9V7a5 5 0 0 1 10 0v2"/>
+              <rect x="2" y="9" width="18" height="12" rx="1"/>
+            </svg>
+
+            {/* Badge */}
+            {itemCount > 0 && (
+              <span style={{
+                position: 'absolute', top: '1px', right: '1px',
+                minWidth: '16px', height: '16px',
+                background: 'var(--mori, #4A5240)',
+                color: '#fff',
+                borderRadius: '999px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'var(--font-dm-sans)', fontSize: '9px', fontWeight: 600,
+                letterSpacing: '0',
+                padding: '0 3px',
+                lineHeight: 1,
+              }}>
+                {itemCount > 99 ? '99+' : itemCount}
+              </span>
+            )}
+          </button>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            aria-label="Open menu"
+            onClick={() => setIsOpen((v) => !v)}
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-current text-sumi transition hover:bg-mori/5 md:hidden"
+          >
+            <span className="absolute h-0.5 w-6 rotate-0 bg-current transition duration-300" />
+            <span className="absolute h-0.5 w-6 bg-current transition duration-300" />
+            <span className="absolute h-0.5 w-6 translate-y-2 bg-current transition duration-300" />
+          </button>
+        </div>
       </div>
 
+      {/* Mobile overlay menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div

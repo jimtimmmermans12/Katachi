@@ -7,10 +7,32 @@ import Nav from "@/components/Nav";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitted(true);
+    setSending(true);
+    setError(null);
+    const form = e.currentTarget;
+    const data = {
+      name: (form.elements.namedItem('name') as HTMLInputElement).value,
+      email: (form.elements.namedItem('email') as HTMLInputElement).value,
+      message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
+    };
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('send failed');
+      setSubmitted(true);
+    } catch {
+      setError('Something went wrong. Please email us directly at hello@katachi.store.');
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -150,14 +172,18 @@ export default function Contact() {
                   <div className="flex flex-col gap-6 pt-4 sm:flex-row sm:items-center">
                     <button
                       type="submit"
-                      className="inline-flex items-center justify-center bg-[#4A5240] px-10 py-4 font-body text-sm font-semibold uppercase tracking-[0.22em] text-shiro transition-colors duration-200 hover:bg-[#3f4535]"
+                      disabled={sending}
+                      className="inline-flex items-center justify-center bg-[#4A5240] px-10 py-4 font-body text-sm font-semibold uppercase tracking-[0.22em] text-shiro transition-colors duration-200 hover:bg-[#3f4535] disabled:opacity-60 disabled:cursor-wait"
                     >
-                      Send message
+                      {sending ? 'Sending...' : 'Send message'}
                     </button>
                     <p className="text-sm text-sumi/50">
                       We respond within 2 business days.
                     </p>
                   </div>
+                  {error && (
+                    <p className="text-sm text-red-600/80">{error}</p>
+                  )}
                 </form>
               )}
             </motion.div>

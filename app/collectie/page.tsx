@@ -33,7 +33,7 @@ export default function CollectiePage() {
 
   const filteredProducts = products.filter((product) => {
     if (activeFilter === "ALL") return true;
-    return product.productType === activeFilter;
+    return product.productType.toUpperCase() === activeFilter;
   });
 
   const filters: FilterCategory[] = ["ALL", "CERAMICS", "WOOD", "LINEN", "METAL"];
@@ -119,7 +119,8 @@ export default function CollectiePage() {
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1.2 + index * 0.08, ease: "easeOut" }}
-                    className="group overflow-hidden rounded-[32px] product-card transition hover:shadow-lg"
+                    className="group overflow-hidden rounded-[32px] product-card transition hover:shadow-lg cursor-pointer"
+                    onClick={() => { window.location.href = `/collectie/${product.handle}`; }}
                   >
                     {/* Product Image */}
                     <div className="relative h-72 overflow-hidden bg-gradient-to-b from-tsuchi to-tsuchi/50">
@@ -154,12 +155,10 @@ export default function CollectiePage() {
 
                       <div className="pt-2 flex items-baseline justify-between">
                         <p className="text-lg font-semibold text-sumi">
-                          €&nbsp;{Math.round(parseFloat(product.priceRange.minVariantPrice.amount))}
+                          {new Intl.NumberFormat('nl-NL', { style: 'currency', currency: product.priceRange.minVariantPrice.currencyCode }).format(parseFloat(product.priceRange.minVariantPrice.amount))}
                         </p>
                         <a
-                          href={`https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/products/${product.handle}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href={`/collectie/${product.handle}`}
                           className="text-xs font-semibold uppercase tracking-[0.2em] text-mori transition hover:text-kin"
                         >
                           View →

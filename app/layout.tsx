@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/contexts/CartContext";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant-garamond",
@@ -37,7 +38,7 @@ export default function RootLayout({
       className={`${cormorant.variable} ${dmSans.variable} ${notoSerifJp.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-shiro text-sumi font-body antialiased">
-        {children}
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );

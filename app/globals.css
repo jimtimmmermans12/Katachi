@@ -120,6 +120,10 @@ body::-webkit-scrollbar-thumb:hover {
   color: var(--kin);
 }
 
+.text-shiro {
+  color: var(--shiro);
+}
+
 .border-tsuchi {
   border-color: rgba(196, 185, 168, 0.45);
 }

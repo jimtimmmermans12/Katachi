@@ -16,11 +16,30 @@ export type ShopifyProduct = {
   title: string;
   handle: string;
   description: string;
+  descriptionHtml?: string;
   productType: string;
+  vendor?: string;
+  tags?: string[];
   priceRange: {
     minVariantPrice: ShopifyMoney;
   };
+  compareAtPriceRange?: {
+    minVariantPrice: ShopifyMoney;
+  };
   featuredImage: ShopifyImage | null;
+  images?: {
+    edges: { node: ShopifyImage & { width?: number; height?: number } }[];
+  };
+  variants?: {
+    edges: {
+      node: {
+        id: string;
+        title: string;
+        availableForSale: boolean;
+        price: ShopifyMoney;
+      };
+    }[];
+  };
 };
 
 type GraphQLResponse<T> = {
@@ -106,6 +125,91 @@ export async function getProducts(count = 24): Promise<ShopifyProduct[]> {
   } catch (err) {
     console.error("Failed to fetch Shopify products, falling back to mock data:", err);
     return MOCK_PRODUCTS.slice(0, count);
+  }
+}
+
+const PRODUCT_BY_HANDLE_QUERY = `
+  query GetProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      id
+      title
+      handle
+      description
+      descriptionHtml
+      productType
+      vendor
+      tags
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      compareAtPriceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      featuredImage {
+        url
+        altText
+      }
+      images(first: 6) {
+        edges {
+          node {
+            url
+            altText
+          }
+        }
+      }
+      variants(first: 10) {
+        edges {
+          node {
+            id
+            title
+            availableForSale
+            price {
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+type ProductByHandleData = {
+  product: ShopifyProduct | null;
+};
+
+export async function getProductByHandle(
+  handle: string
+): Promise<ShopifyProduct | null> {
+  const domain = process.env.SHOPIFY_STORE_DOMAIN;
+  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+
+  if (!domain || !token || token === "your_storefront_access_token_here") {
+    const mock = MOCK_PRODUCTS.find((p) => p.handle === handle) ?? null;
+    if (mock) {
+      return {
+        ...mock,
+        descriptionHtml: `<p>${mock.description}</p>`,
+      };
+    }
+    return null;
+  }
+
+  try {
+    const data = await shopifyFetch<ProductByHandleData>(
+      PRODUCT_BY_HANDLE_QUERY,
+      { handle }
+    );
+    return data.product;
+  } catch (err) {
+    console.error("Failed to fetch product by handle:", err);
+    return null;
   }
 }
 
