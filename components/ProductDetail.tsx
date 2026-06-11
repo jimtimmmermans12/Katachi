@@ -181,6 +181,21 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
   );
   const { addToCart, isLoading: cartLoading } = useCart();
 
+  // Sticky mobile bar: visible only while the main button is off-screen
+  const mainBtnRef = useRef<HTMLButtonElement | null>(null);
+  const [mainBtnVisible, setMainBtnVisible] = useState(true);
+
+  useEffect(() => {
+    const el = mainBtnRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setMainBtnVisible(entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const handleAddToCart = async () => {
     if (!selectedVariantId || cartLoading) return;
     await addToCart(selectedVariantId, 1);
@@ -310,6 +325,7 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
 
               {/* Add to cart */}
               <button
+                ref={mainBtnRef}
                 type="button"
                 onClick={handleAddToCart}
                 disabled={!selectedVariantId || cartLoading}
@@ -356,6 +372,74 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
           </p>
         </div>
       </main>
+
+      {/* Sticky add-to-cart bar — mobile only, hidden while main button is on-screen */}
+      <div
+        className="lg:hidden"
+        aria-hidden={mainBtnVisible}
+        style={{
+          position: 'fixed',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 50,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '14px',
+          padding: '12px 16px calc(12px + env(safe-area-inset-bottom))',
+          background: 'rgba(247,245,242,0.92)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderTop: '1px solid rgba(44,44,44,0.1)',
+          transform: mainBtnVisible ? 'translateY(100%)' : 'translateY(0)',
+          transition: 'transform 0.3s ease',
+          pointerEvents: mainBtnVisible ? 'none' : 'auto',
+        }}
+      >
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{
+            fontFamily: 'var(--font-cormorant-garamond), Georgia, serif',
+            fontSize: '1rem', fontWeight: 400, color: '#1a1a1a',
+            margin: 0, lineHeight: 1.2,
+            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+          }}>
+            {product.title}
+          </p>
+          {amount && (
+            <p style={{
+              fontFamily: 'var(--font-dm-sans)', fontSize: '11px',
+              letterSpacing: '0.1em', color: 'rgba(44,44,44,0.6)',
+              margin: '2px 0 0',
+            }}>
+              {amount}
+            </p>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={!selectedVariantId || cartLoading}
+          style={{
+            flexShrink: 0,
+            height: '44px',
+            padding: '0 22px',
+            background: '#1a1a1a',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: 0,
+            fontFamily: 'var(--font-dm-sans)',
+            fontSize: '10px',
+            fontWeight: 500,
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            cursor: cartLoading ? 'wait' : 'pointer',
+            opacity: (!selectedVariantId || cartLoading) ? 0.65 : 1,
+            transition: 'opacity 0.2s',
+          }}
+        >
+          {cartLabel}
+        </button>
+      </div>
 
       <Footer />
     </div>
