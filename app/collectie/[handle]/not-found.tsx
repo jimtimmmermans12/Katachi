@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
@@ -10,13 +11,13 @@ export default function ProductNotFound() {
         <p className="text-[10px] uppercase tracking-[0.28em]" style={{ color: "rgba(44,44,44,0.4)" }}>
           Product not found
         </p>
-        <a
+        <Link
           href="/collectie"
           className="text-[10px] uppercase tracking-[0.22em] no-underline"
           style={{ color: "rgba(44,44,44,0.55)" }}
         >
           ← Back to collection
-        </a>
+        </Link>
       </div>
       <Footer />
     </div>

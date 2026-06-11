@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -8,6 +10,7 @@ import type { ShopifyProduct } from "@/lib/shopify";
 import { shopifyImg } from "@/lib/img";
 
 export default function CollectiePage() {
+  const router = useRouter();
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<string>("ALL");
@@ -125,7 +128,7 @@ export default function CollectiePage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1.2 + index * 0.08, ease: "easeOut" }}
                     className="group overflow-hidden rounded-[32px] product-card transition hover:shadow-lg cursor-pointer"
-                    onClick={() => { window.location.href = `/collectie/${product.handle}`; }}
+                    onClick={() => router.push(`/collectie/${product.handle}`)}
                   >
                     {/* Product Image */}
                     <div className="relative h-72 overflow-hidden bg-gradient-to-b from-tsuchi to-tsuchi/50">
@@ -163,12 +166,12 @@ export default function CollectiePage() {
                         <p className="text-lg font-semibold text-sumi">
                           {new Intl.NumberFormat('nl-NL', { style: 'currency', currency: product.priceRange.minVariantPrice.currencyCode }).format(parseFloat(product.priceRange.minVariantPrice.amount))}
                         </p>
-                        <a
+                        <Link
                           href={`/collectie/${product.handle}`}
                           className="text-xs font-semibold uppercase tracking-[0.2em] text-mori transition hover:text-kin"
                         >
                           View →
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </motion.article>

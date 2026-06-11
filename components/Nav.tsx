@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 
@@ -36,21 +37,21 @@ export default function Nav() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2 font-display text-base uppercase tracking-[0.25em] text-sumi">
+        <Link href="/" className="flex items-center gap-2 font-display text-base uppercase tracking-[0.25em] text-sumi">
           <span>KATACHI</span>
           <span className="text-kin">形</span>
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-10 md:flex">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.label}
               href={item.href}
               className="text-sm uppercase tracking-[0.25em] text-sumi transition hover:text-mori"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -122,14 +123,14 @@ export default function Nav() {
               </button>
               <div className="space-y-8 text-lg uppercase tracking-[0.3em] text-sumi">
                 {navItems.map((item) => (
-                  <a
+                  <Link
                     key={item.label}
                     href={item.href}
                     className="block transition hover:text-mori"
                     onClick={() => setIsOpen(false)}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
               <div className="mt-8 flex flex-col gap-3 text-sm text-sumi/75">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
@@ -226,9 +227,9 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
         {/* Breadcrumb */}
         <div style={{ borderBottom: '1px solid rgba(44,44,44,0.1)', padding: '16px 24px' }}>
           <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.5)', margin: 0 }}>
-            <a href="/" style={{ color: 'inherit', textDecoration: 'none' }}>Katachi</a>
+            <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>Katachi</Link>
             <span style={{ margin: '0 10px' }}>—</span>
-            <a href="/collectie" style={{ color: 'inherit', textDecoration: 'none' }}>Collection</a>
+            <Link href="/collectie" style={{ color: 'inherit', textDecoration: 'none' }}>Collection</Link>
             <span style={{ margin: '0 10px' }}>—</span>
             <span style={{ color: 'rgba(44,44,44,0.85)' }}>{product.title}</span>
           </p>
@@ -375,7 +376,7 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
 
       {/* Sticky add-to-cart bar — mobile only, hidden while main button is on-screen */}
       <div
-        className="lg:hidden"
+        className="md:hidden"
         aria-hidden={mainBtnVisible}
         style={{
           position: 'fixed',

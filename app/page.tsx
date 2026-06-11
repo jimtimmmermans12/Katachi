@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import { useCart } from "@/contexts/CartContext";
@@ -42,8 +44,13 @@ function getCardAction(product: ShopifyProduct): CardAction {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const { addToCart, isLoading: cartLoading } = useCart();
+
+  // Hero parallax: image moves at 60% of scroll speed (lags by 40%)
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, (v) => v * 0.4);
 
   useEffect(() => {
     fetch("/api/products")
@@ -86,34 +93,37 @@ export default function Home() {
                 A carefully curated collection of Japanese-inspired objects for the intentional interior.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
-                <a
+                <Link
                   href="/collectie"
                   className="inline-flex items-center justify-center whitespace-nowrap rounded-none border-none bg-[#2C2C2C] px-10 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-shiro transition hover:bg-[#1a1a1a]"
                 >
                   View the collection
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/filosofie"
                   className="whitespace-nowrap text-sm font-semibold uppercase tracking-[0.2em] text-sumi/65 underline underline-offset-4 decoration-sumi/30 hover:text-mori hover:decoration-mori/50 transition"
                 >
                   Our philosophy
-                </a>
+                </Link>
               </div>
             </motion.div>
           </div>
 
-          {/* Right: hero image */}
+          {/* Right: hero image with parallax (desktop only — block is hidden on mobile) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.8, ease: "easeOut" }}
-            className="hidden lg:block lg:w-1/2 relative"
+            className="hidden lg:block lg:w-1/2 relative overflow-hidden"
           >
-            <img
-              src={HERO_IMAGE}
-              alt="Japanese ceramics — quiet objects for the intentional home"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
+            <motion.div style={{ y: heroY }} className="absolute inset-0">
+              <img
+                src={HERO_IMAGE}
+                alt="Japanese ceramics — quiet objects for the intentional home"
+                className="absolute left-0 w-full object-cover"
+                style={{ height: "140%", top: "-40%" }}
+              />
+            </motion.div>
             <div className="absolute inset-0 bg-gradient-to-r from-shiro/30 to-transparent" />
           </motion.div>
         </section>
@@ -175,7 +185,7 @@ export default function Home() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1.3, ease: "easeOut" }}
                     className="product-card group relative overflow-hidden rounded-[32px] p-8 shadow-soft cursor-pointer"
-                    onClick={() => { window.location.href = `/collectie/${featured.handle}`; }}
+                    onClick={() => router.push(`/collectie/${featured.handle}`)}
                   >
                     <div className="h-[380px] overflow-hidden rounded-3xl bg-tsuchi">
                       {featured.featuredImage?.url && (
@@ -212,7 +222,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 1.2 + index * 0.1, ease: "easeOut" }}
                       className="product-card group overflow-hidden rounded-[32px] p-8 shadow-soft cursor-pointer"
-                      onClick={() => { window.location.href = `/collectie/${product.handle}`; }}
+                      onClick={() => router.push(`/collectie/${product.handle}`)}
                     >
                       <div className="h-56 overflow-hidden rounded-3xl bg-[#f3efe9]">
                         {product.featuredImage?.url && (
@@ -290,9 +300,9 @@ export default function Home() {
                   <p className="font-display text-xs uppercase tracking-[0.28em] text-sumi/50">Journal</p>
                   <h3 className="mt-5 font-display text-3xl text-sumi">{post.title}</h3>
                   <p className="mt-4 text-base leading-8 text-sumi/75">{post.excerpt}</p>
-                  <a href="/journal" className="mt-6 inline-flex text-xs font-semibold uppercase tracking-[0.2em] text-mori transition hover:text-kin">
+                  <Link href="/journal" className="mt-6 inline-flex text-xs font-semibold uppercase tracking-[0.2em] text-mori transition hover:text-kin">
                     Read more
-                  </a>
+                  </Link>
                 </motion.article>
               ))}
             </div>
@@ -380,8 +390,8 @@ function CardCta({
   }
 
   return (
-    <a href={`/collectie/${product.handle}`} style={baseStyle}>
+    <Link href={`/collectie/${product.handle}`} style={baseStyle}>
       View
-    </a>
+    </Link>
   );
 }

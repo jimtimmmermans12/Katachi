@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 
@@ -139,12 +140,12 @@ export default function Filosofie() {
               transition={{ duration: 1.1, ease: "easeOut", delay: 0.35 }}
               className="mt-16"
             >
-              <a
+              <Link
                 href="/collectie"
                 className="inline-flex min-w-[220px] items-center justify-center bg-[#2C2C2C] px-12 py-4 font-body text-sm font-semibold uppercase tracking-[0.22em] text-shiro transition-colors duration-200 hover:bg-[#1a1a1a]"
               >
                 View the collection
-              </a>
+              </Link>
             </motion.div>
           </div>
         </section>

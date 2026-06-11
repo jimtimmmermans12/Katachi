@@ -25,7 +25,12 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\" https://katachi-blond.vercel.app/collection)",
       "Bash(curl -s https://katachi-blond.vercel.app/sitemap.xml)",
       "Bash(curl -s https://katachi-blond.vercel.app/robots.txt)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://katachi-blond.vercel.app/collectie/does-not-exist)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://katachi-blond.vercel.app/collectie/does-not-exist)",
+      "Bash(grep *)",
+      "Read(//private/tmp/**)",
+      "Bash(node smoke.js)",
+      "Bash(npm install *)",
+      "Bash(xargs kill)"
     ]
   }
 }

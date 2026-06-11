@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="border-t border-slate-200/60 bg-shiro/95 px-6 pt-16 pb-10 text-sumi">
@@ -12,15 +14,15 @@ export default function Footer() {
         <div className="space-y-4">
           <p className="font-display text-sm uppercase tracking-[0.25em] text-sumi/90">Navigation</p>
           <ul className="space-y-3 text-sm leading-7 text-sumi/80">
-            <li><a href="/collectie" className="transition hover:text-mori">Collection</a></li>
-            <li><a href="/filosofie" className="transition hover:text-mori">Philosophy</a></li>
-            <li><a href="/journal" className="transition hover:text-mori">Journal</a></li>
-            <li><a href="/contact" className="transition hover:text-mori">Contact</a></li>
+            <li><Link href="/collectie" className="transition hover:text-mori">Collection</Link></li>
+            <li><Link href="/filosofie" className="transition hover:text-mori">Philosophy</Link></li>
+            <li><Link href="/journal" className="transition hover:text-mori">Journal</Link></li>
+            <li><Link href="/contact" className="transition hover:text-mori">Contact</Link></li>
           </ul>
           <ul className="space-y-3 pt-2 text-sm leading-7 text-sumi/60">
-            <li><a href="/verzending-retour" className="transition hover:text-mori">Shipping &amp; Returns</a></li>
-            <li><a href="/privacy" className="transition hover:text-mori">Privacy Policy</a></li>
-            <li><a href="/voorwaarden" className="transition hover:text-mori">Terms &amp; Conditions</a></li>
+            <li><Link href="/verzending-retour" className="transition hover:text-mori">Shipping &amp; Returns</Link></li>
+            <li><Link href="/privacy" className="transition hover:text-mori">Privacy Policy</Link></li>
+            <li><Link href="/voorwaarden" className="transition hover:text-mori">Terms &amp; Conditions</Link></li>
           </ul>
         </div>
 

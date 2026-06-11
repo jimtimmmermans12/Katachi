@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/contexts/CartContext";
+import CookieBanner from "@/components/CookieBanner";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant-garamond",
@@ -65,6 +66,7 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-shiro text-sumi font-body antialiased">
         <CartProvider>{children}</CartProvider>
+        <CookieBanner />
       </body>
     </html>
   );
