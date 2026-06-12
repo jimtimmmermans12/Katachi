@@ -32,7 +32,8 @@
       "Bash(npm install *)",
       "Bash(xargs kill)",
       "Bash(node smoke2.js)",
-      "Bash(node smoke3.js)"
+      "Bash(node smoke3.js)",
+      "Bash(curl -s https://katachi-blond.vercel.app/__TRACKED_VAR__)"
     ]
   }
 }

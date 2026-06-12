@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="border-t border-slate-200/60 bg-shiro/95 px-6 pt-16 pb-10 text-sumi">
-      <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-3">
+      <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-4">
           <p className="font-display text-2xl uppercase tracking-[0.25em] text-sumi">KATACHI</p>
           <p className="max-w-sm text-sm leading-7 text-sumi/80">
@@ -19,10 +19,14 @@ export default function Footer() {
             <li><Link href="/journal" className="transition hover:text-mori">Journal</Link></li>
             <li><Link href="/contact" className="transition hover:text-mori">Contact</Link></li>
           </ul>
-          <ul className="space-y-3 pt-2 text-sm leading-7 text-sumi/60">
-            <li><Link href="/verzending-retour" className="transition hover:text-mori">Shipping &amp; Returns</Link></li>
-            <li><Link href="/privacy" className="transition hover:text-mori">Privacy Policy</Link></li>
-            <li><Link href="/voorwaarden" className="transition hover:text-mori">Terms &amp; Conditions</Link></li>
+        </div>
+
+        <div className="space-y-4">
+          <p className="font-display text-sm uppercase tracking-[0.25em] text-sumi/90">Service</p>
+          <ul className="space-y-3 text-sm leading-7 text-sumi/80">
+            <li><Link href="/shipping-returns" className="transition hover:text-mori">Shipping &amp; Returns</Link></li>
+            <li><Link href="/privacy-policy" className="transition hover:text-mori">Privacy Policy</Link></li>
+            <li><Link href="/terms" className="transition hover:text-mori">Terms of Service</Link></li>
           </ul>
         </div>
 

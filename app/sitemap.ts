@@ -10,9 +10,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/filosofie`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/journal`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${SITE_URL}/contact`, changeFrequency: "yearly", priority: 0.4 },
-    { url: `${SITE_URL}/verzending-retour`, changeFrequency: "yearly", priority: 0.2 },
-    { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.2 },
-    { url: `${SITE_URL}/voorwaarden`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${SITE_URL}/shipping-returns`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${SITE_URL}/privacy-policy`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${SITE_URL}/terms`, changeFrequency: "yearly", priority: 0.2 },
   ];
 
   let productRoutes: MetadataRoute.Sitemap = [];

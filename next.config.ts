@@ -16,6 +16,21 @@ const nextConfig: NextConfig = {
         destination: "/collectie",
         permanent: true,
       },
+      {
+        source: "/verzending-retour",
+        destination: "/shipping-returns",
+        permanent: true,
+      },
+      {
+        source: "/privacy",
+        destination: "/privacy-policy",
+        permanent: true,
+      },
+      {
+        source: "/voorwaarden",
+        destination: "/terms",
+        permanent: true,
+      },
     ];
   },
 };

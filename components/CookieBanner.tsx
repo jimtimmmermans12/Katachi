@@ -54,7 +54,7 @@ export default function CookieBanner() {
         We use only essential cookies to keep your cart working. No tracking,
         no third parties. See our{' '}
         <Link
-          href="/privacy"
+          href="/privacy-policy"
           style={{ color: 'var(--sumi, #2C2C2C)', textDecoration: 'underline', textUnderlineOffset: '3px' }}
         >
           privacy policy
