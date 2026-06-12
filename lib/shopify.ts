@@ -118,6 +118,27 @@ const PRODUCTS_QUERY = `
             url
             altText
           }
+          images(first: 2) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+          variants(first: 3) {
+            edges {
+              node {
+                id
+                title
+                availableForSale
+                price {
+                  amount
+                  currencyCode
+                }
+              }
+            }
+          }
         }
       }
     }

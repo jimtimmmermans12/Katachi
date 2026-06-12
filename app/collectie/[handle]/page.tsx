@@ -4,6 +4,8 @@ import ProductDetail from "@/components/ProductDetail";
 import { getProductByHandle, getProducts } from "@/lib/shopify";
 import { shopifyImg } from "@/lib/img";
 
+export const revalidate = 60;
+
 type Props = {
   params: Promise<{ handle: string }>;
 };
