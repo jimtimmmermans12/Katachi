@@ -147,3 +147,26 @@ body::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(44, 44, 44, 0.08);
 }
+
+/* ── Scroll reveal (IntersectionObserver toggles .is-visible) ───────────────── */
+/* Only transform/opacity animate, so no layout shift; will-change hints the
+   compositor. Calm 0.6s ease-out, in the spirit of Aesop / The Row. */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

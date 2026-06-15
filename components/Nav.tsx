@@ -12,11 +12,16 @@ const navItems = [
   { label: "Contact", href: "/contact" },
 ];
 
-export default function Nav() {
+export default function Nav({ overlay = false }: { overlay?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { cart, openDrawer } = useCart();
   const itemCount = cart?.totalQuantity ?? 0;
+
+  // On overlay pages (e.g. the homepage video hero) the bar floats over a dark
+  // background while at the top, so logo/links/icons render light. Once scrolled
+  // the bar gains its solid white treatment and reverts to the dark-on-light text.
+  const light = overlay && !scrolled;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.pageYOffset > 20);
@@ -37,7 +42,7 @@ export default function Nav() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-display text-base uppercase tracking-[0.25em] text-sumi">
+        <Link href="/" className={`flex items-center gap-2 font-display text-base uppercase tracking-[0.25em] transition-colors duration-500 ${light ? "text-shiro" : "text-sumi"}`}>
           <span>KATACHI</span>
           <span className="text-kin">形</span>
         </Link>
@@ -48,7 +53,7 @@ export default function Nav() {
             <Link
               key={item.label}
               href={item.href}
-              className="text-sm uppercase tracking-[0.25em] text-sumi transition hover:text-mori"
+              className={`text-sm uppercase tracking-[0.25em] transition-colors duration-500 ${light ? "text-shiro/90 hover:text-shiro" : "text-sumi hover:text-mori"}`}
             >
               {item.label}
             </Link>
@@ -62,7 +67,7 @@ export default function Nav() {
             type="button"
             aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
             onClick={openDrawer}
-            style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', padding: '6px', display: 'flex', alignItems: 'center', color: 'var(--sumi, #2C2C2C)' }}
+            style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', padding: '6px', display: 'flex', alignItems: 'center', color: light ? 'var(--shiro, #F7F5F2)' : 'var(--sumi, #2C2C2C)', transition: 'color 0.5s' }}
           >
             {/* Bag icon */}
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
@@ -94,7 +99,7 @@ export default function Nav() {
             type="button"
             aria-label="Open menu"
             onClick={() => setIsOpen((v) => !v)}
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-current text-sumi transition hover:bg-mori/5 md:hidden"
+            className={`relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-current transition hover:bg-mori/5 md:hidden ${light ? "text-shiro" : "text-sumi"}`}
           >
             <span className="absolute h-0.5 w-6 rotate-0 bg-current transition duration-300" />
             <span className="absolute h-0.5 w-6 bg-current transition duration-300" />
