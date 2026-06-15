@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/Footer";
@@ -75,6 +75,46 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
     return () => mq.removeEventListener("change", update);
   }, []);
 
+  // Smooth the loop seam: native `loop` snaps the last frame to the first, so we
+  // fade the video toward the poster underneath over the last/first ~0.7s. The
+  // hard cut lands while the video is ~invisible, reading as a calm breath rather
+  // than a jump. rAF runs only while the video plays and the tab is visible.
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    if (!showVideo) return;
+    const v = videoRef.current;
+    if (!v) return;
+
+    const FADE = 0.7; // seconds of fade on each side of the seam
+    let raf = 0;
+
+    const tick = () => {
+      const d = v.duration;
+      if (d && Number.isFinite(d)) {
+        const t = v.currentTime;
+        const o = Math.min(t / FADE, (d - t) / FADE, 1);
+        v.style.opacity = String(Math.max(0, o));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const onVisibility = () => (document.hidden ? stop() : start());
+
+    start();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [showVideo]);
+
   const featured = products[0] ?? null;
   const secondary = products.slice(1, 3);
 
@@ -100,7 +140,9 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
             />
             {showVideo && (
               <video
+                ref={videoRef}
                 className="absolute inset-0 h-full w-full object-cover"
+                style={{ opacity: 0 }}
                 autoPlay
                 muted
                 loop
