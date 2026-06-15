@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductDetail from "@/components/ProductDetail";
-import { getProductByHandle, getProducts } from "@/lib/shopify";
+import { getProductByHandle, getProducts, getProductSpecs } from "@/lib/shopify";
 import { shopifyImg } from "@/lib/img";
 
 export const revalidate = 60;
@@ -49,6 +49,7 @@ export default async function ProductPage({ params }: Props) {
   }
 
   const related = allProducts.filter((p) => p.handle !== handle).slice(0, 2);
+  const specs = getProductSpecs(product);
 
-  return <ProductDetail product={product} related={related} />;
+  return <ProductDetail product={product} related={related} specs={specs} />;
 }

@@ -53,7 +53,34 @@ export type ShopifyProduct = {
   variants?: {
     edges: { node: ShopifyVariant }[];
   };
+  metafields?: ({ key: string; value: string } | null)[];
 };
+
+export type ProductSpecs = {
+  material: string | null;
+  diameter: string | null;
+  capacity: string | null;
+  weight: string | null;
+  care: string | null;
+};
+
+// Maps the product's `custom` spec metafields into a flat, trimmed shape.
+// Missing or empty values become null so the view can show clear placeholders.
+export function getProductSpecs(product: ShopifyProduct): ProductSpecs {
+  const byKey = new Map(
+    (product.metafields ?? [])
+      .filter((m): m is { key: string; value: string } => Boolean(m?.value?.trim()))
+      .map((m) => [m.key, m.value.trim()] as const)
+  );
+  const val = (key: string) => byKey.get(key) ?? null;
+  return {
+    material: val("material"),
+    diameter: val("diameter"),
+    capacity: val("capacity"),
+    weight: val("weight"),
+    care: val("care"),
+  };
+}
 
 type GraphQLResponse<T> = {
   data: T;
@@ -236,6 +263,16 @@ const PRODUCT_BY_HANDLE_QUERY = `
             }
           }
         }
+      }
+      metafields(identifiers: [
+        { namespace: "custom", key: "material" }
+        { namespace: "custom", key: "diameter" }
+        { namespace: "custom", key: "capacity" }
+        { namespace: "custom", key: "weight" }
+        { namespace: "custom", key: "care" }
+      ]) {
+        key
+        value
       }
     }
   }

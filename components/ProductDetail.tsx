@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
 import { shopifyImg } from '@/lib/img';
 import type {
+  ProductSpecs,
   ShopifyGalleryImage,
   ShopifyProduct,
   ShopifyVariant,
@@ -208,9 +209,11 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
 export default function ProductDetail({
   product,
   related = [],
+  specs,
 }: {
   product: ShopifyProduct;
   related?: ShopifyProduct[];
+  specs: ProductSpecs;
 }) {
   const variants = product.variants?.edges?.map((e) => e.node) ?? [];
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
@@ -253,6 +256,16 @@ export default function ProductDetail({
         maximumFractionDigits: 2,
       }).format(parseFloat(price.amount))
     : null;
+
+  // Spec block — units live here so Shopify metafields stay plain numbers.
+  // A null value falls back to a unit-bearing placeholder the merchant can fill in.
+  const specRows: { label: string; value: string | null; placeholder: string }[] = [
+    { label: 'Material', value: specs.material, placeholder: '—' },
+    { label: 'Dimensions', value: specs.diameter ? `⌀ ${specs.diameter} cm` : null, placeholder: '⌀ — cm' },
+    { label: 'Capacity', value: specs.capacity ? `${specs.capacity} ml` : null, placeholder: '— ml' },
+    { label: 'Weight', value: specs.weight ? `${specs.weight} g` : null, placeholder: '— g' },
+    { label: 'Care', value: specs.care, placeholder: '—' },
+  ];
 
   return (
     <div style={{ background: 'var(--shiro, #F7F5F2)', minHeight: '100vh' }}>
@@ -317,6 +330,35 @@ export default function ProductDetail({
                   style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.875rem', lineHeight: 1.9, color: 'rgba(44,44,44,0.75)', margin: '0 0 20px', maxWidth: '480px' }}
                 />
               )}
+
+              {/* Spec block */}
+              <div style={{ margin: '0 0 24px' }}>
+                <div style={{ height: '1px', background: 'rgba(44,44,44,0.1)', margin: '0 0 24px' }} />
+                <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.45)', margin: '0 0 14px' }}>
+                  Details
+                </p>
+                <dl style={{ margin: 0, maxWidth: '480px' }}>
+                  {specRows.map((row) => (
+                    <div
+                      key={row.label}
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '120px 1fr',
+                        gap: '16px',
+                        padding: '9px 0',
+                        borderBottom: '1px solid rgba(44,44,44,0.06)',
+                      }}
+                    >
+                      <dt style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.45)', lineHeight: 1.7, margin: 0 }}>
+                        {row.label}
+                      </dt>
+                      <dd style={{ margin: 0, fontFamily: 'var(--font-dm-sans)', fontSize: '0.8125rem', letterSpacing: '0.02em', lineHeight: 1.7, color: row.value ? 'rgba(44,44,44,0.85)' : 'rgba(44,44,44,0.3)' }}>
+                        {row.value ?? row.placeholder}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
 
               {/* Variant selector */}
               {variants.length > 1 && (
