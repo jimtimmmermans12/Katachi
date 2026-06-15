@@ -17,6 +17,11 @@ const HERO_POSTER = "/hero-katachi.jpg";
 const HERO_VIDEO_WEBM = "/hero.webm";
 const HERO_VIDEO_MP4 = "/hero.mp4";
 
+// Whisper-light shadow: wide blur, low opacity — invisible as a shadow but lifts
+// the light hero text off the brightest video frames. Scoped to the light text
+// only (never the solid Shiro primary button).
+const HERO_TEXT_SHADOW = "0 1px 28px rgba(28,28,28,0.35)";
+
 const journals = [
   {
     title: "The quiet mechanics of ritual",
@@ -109,12 +114,17 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
                 <source src={HERO_VIDEO_MP4} type="video/mp4" />
               </video>
             )}
-            {/* Subtle dark scrim for legibility — a touch deeper top and bottom. */}
+            {/* Scrim for legibility — directional so it stays elegant: darkest
+               behind the text (lower-left), clearing to light on the right. A
+               faint uniform floor guarantees contrast on the brightest frame. */}
             <div
               className="absolute inset-0"
               style={{
-                background:
-                  "linear-gradient(180deg, rgba(44,44,44,0.46) 0%, rgba(44,44,44,0.26) 38%, rgba(44,44,44,0.50) 100%)",
+                background: [
+                  "linear-gradient(90deg, rgba(44,44,44,0.64) 0%, rgba(44,44,44,0.42) 32%, rgba(44,44,44,0.12) 64%, rgba(44,44,44,0) 100%)",
+                  "linear-gradient(180deg, rgba(44,44,44,0.22) 0%, rgba(44,44,44,0) 30%, rgba(44,44,44,0) 60%, rgba(44,44,44,0.40) 100%)",
+                  "rgba(44,44,44,0.10)",
+                ].join(", "),
               }}
             />
             {/* 形 kanji watermark, light over the scrim */}
@@ -129,13 +139,13 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
           <div className="relative z-10 w-full px-8 sm:px-12 lg:px-16">
             <Reveal immediate className="mx-auto w-full max-w-7xl">
               <div className="max-w-xl">
-                <p className="font-display text-xs uppercase tracking-[0.35em] text-shiro/70">
+                <p className="font-display text-xs uppercase tracking-[0.35em] text-shiro/80" style={{ textShadow: HERO_TEXT_SHADOW }}>
                   形 — Objects that earn their place
                 </p>
-                <h1 className="mt-8 font-display text-7xl leading-[0.92] tracking-[-0.03em] text-shiro sm:text-8xl">
+                <h1 className="mt-8 font-display text-7xl leading-[0.92] tracking-[-0.03em] text-shiro sm:text-8xl" style={{ textShadow: HERO_TEXT_SHADOW }}>
                   Own less.<br />Choose well.
                 </h1>
-                <p className="mt-8 max-w-md text-base leading-8 text-shiro/80 sm:text-lg">
+                <p className="mt-8 max-w-md text-base leading-8 text-shiro/90 sm:text-lg" style={{ textShadow: HERO_TEXT_SHADOW }}>
                   A carefully curated collection of Japanese-inspired objects for the intentional interior.
                 </p>
                 <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
@@ -147,7 +157,8 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
                   </Link>
                   <Link
                     href="/filosofie"
-                    className="whitespace-nowrap text-sm font-semibold uppercase tracking-[0.2em] text-shiro/80 underline underline-offset-4 decoration-shiro/40 hover:text-shiro hover:decoration-shiro/70 transition"
+                    className="whitespace-nowrap text-sm font-semibold uppercase tracking-[0.2em] text-shiro/90 underline underline-offset-4 decoration-shiro/60 hover:text-shiro hover:decoration-shiro/80 transition"
+                    style={{ textShadow: HERO_TEXT_SHADOW }}
                   >
                     Our philosophy
                   </Link>
