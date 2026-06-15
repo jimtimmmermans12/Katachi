@@ -121,8 +121,13 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
               className="absolute inset-0"
               style={{
                 background: [
-                  "linear-gradient(90deg, rgba(44,44,44,0.64) 0%, rgba(44,44,44,0.42) 32%, rgba(44,44,44,0.12) 64%, rgba(44,44,44,0) 100%)",
-                  "linear-gradient(180deg, rgba(44,44,44,0.22) 0%, rgba(44,44,44,0) 30%, rgba(44,44,44,0) 60%, rgba(44,44,44,0.40) 100%)",
+                  // left → right: deep behind the text, clearing to light on the right
+                  "linear-gradient(90deg, rgba(44,44,44,0.74) 0%, rgba(44,44,44,0.55) 32%, rgba(44,44,44,0.18) 64%, rgba(44,44,44,0) 100%)",
+                  // gentle top (nav) + stronger bottom (buttons) weighting
+                  "linear-gradient(180deg, rgba(44,44,44,0.22) 0%, rgba(44,44,44,0) 30%, rgba(44,44,44,0) 58%, rgba(44,44,44,0.55) 100%)",
+                  // bottom-left bloom — concentrates contrast exactly under the subtext + buttons
+                  "radial-gradient(115% 90% at 0% 100%, rgba(44,44,44,0.40) 0%, rgba(44,44,44,0) 55%)",
+                  // faint uniform floor — guarantees a baseline on the brightest frame
                   "rgba(44,44,44,0.10)",
                 ].join(", "),
               }}
@@ -145,7 +150,7 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
                 <h1 className="mt-8 font-display text-7xl leading-[0.92] tracking-[-0.03em] text-shiro sm:text-8xl" style={{ textShadow: HERO_TEXT_SHADOW }}>
                   Own less.<br />Choose well.
                 </h1>
-                <p className="mt-8 max-w-md text-base leading-8 text-shiro/90 sm:text-lg" style={{ textShadow: HERO_TEXT_SHADOW }}>
+                <p className="mt-8 max-w-md text-base leading-8 text-shiro sm:text-lg" style={{ textShadow: HERO_TEXT_SHADOW }}>
                   A carefully curated collection of Japanese-inspired objects for the intentional interior.
                 </p>
                 <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
@@ -157,7 +162,7 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
                   </Link>
                   <Link
                     href="/filosofie"
-                    className="whitespace-nowrap text-sm font-semibold uppercase tracking-[0.2em] text-shiro/90 underline underline-offset-4 decoration-shiro/60 hover:text-shiro hover:decoration-shiro/80 transition"
+                    className="inline-flex items-center justify-center whitespace-nowrap rounded-none border border-shiro/70 bg-transparent px-10 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-shiro transition hover:border-shiro hover:bg-shiro/10"
                     style={{ textShadow: HERO_TEXT_SHADOW }}
                   >
                     Our philosophy
