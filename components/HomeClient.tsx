@@ -144,7 +144,7 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
           <div className="relative z-10 w-full px-8 sm:px-12 lg:px-16">
             <Reveal immediate className="mx-auto w-full max-w-7xl">
               <div className="max-w-xl">
-                <p className="font-display text-xs uppercase tracking-[0.35em] text-shiro/80" style={{ textShadow: HERO_TEXT_SHADOW }}>
+                <p className="font-display text-xs uppercase tracking-[0.35em] text-shiro" style={{ textShadow: HERO_TEXT_SHADOW }}>
                   形 — Objects that earn their place
                 </p>
                 <h1 className="mt-8 font-display text-7xl leading-[0.92] tracking-[-0.03em] text-shiro sm:text-8xl" style={{ textShadow: HERO_TEXT_SHADOW }}>
