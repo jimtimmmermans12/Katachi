@@ -2,13 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import NewsletterSignup from "@/components/NewsletterSignup";
-import ProductCardImage from "@/components/ProductCardImage";
 import Reveal from "@/components/Reveal";
-import { useCart } from "@/contexts/CartContext";
+import { shopifyImg } from "@/lib/img";
 import type { ShopifyProduct } from "@/lib/shopify";
 
 // Poster shows instantly and stands in for the video on reduced-motion / slow
@@ -41,28 +39,7 @@ function fmt(amount: string, currencyCode: string) {
   }).format(parseFloat(amount));
 }
 
-type CardAction =
-  | { type: "add"; variantId: string; available: boolean }
-  | { type: "view"; href: string };
-
-function getCardAction(product: ShopifyProduct): CardAction {
-  const variants = product.variants?.edges ?? [];
-  // Single variant → add straight to cart. Multiple variants → send to the
-  // product page so the customer can choose before adding.
-  if (variants.length === 1) {
-    return {
-      type: "add",
-      variantId: variants[0].node.id,
-      available: variants[0].node.availableForSale,
-    };
-  }
-  return { type: "view", href: `/collectie/${product.handle}` };
-}
-
 export default function HomeClient({ products }: { products: ShopifyProduct[] }) {
-  const router = useRouter();
-  const { addToCart, isLoading: cartLoading } = useCart();
-
   // Hero video: rendered only after mount and only when the visitor hasn't asked
   // for reduced motion. So reduced-motion users get the static poster and never
   // fetch the video, SSR emits the poster alone, and there's no hydration flash.
@@ -161,9 +138,6 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
     // videoRefs are stable refs; effect re-runs only when the video is (de)activated.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showVideo]);
-
-  const featured = products[0] ?? null;
-  const secondary = products.slice(1, 3);
 
   return (
     <div className="relative overflow-hidden bg-shiro text-sumi">
@@ -295,62 +269,51 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
                 The collection is being prepared.
               </p>
             ) : (
-              <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
-                {featured && (
-                  <Reveal
-                    as="article"
-                    className="product-card group relative overflow-hidden rounded-[32px] p-8 shadow-soft cursor-pointer"
-                    onClick={() => router.push(`/collectie/${featured.handle}`)}
-                  >
-                    <div className="h-[380px] overflow-hidden rounded-3xl bg-tsuchi">
-                      <ProductCardImage product={featured} width={1000} eager />
-                    </div>
-                    <div className="mt-8 space-y-2">
-                      <p className="text-xs uppercase tracking-[0.28em] text-sumi/50">
-                        {featured.productType || "Featured"}
-                      </p>
-                      <h3 className="text-3xl font-display text-sumi">{featured.title}</h3>
-                      <p className="text-base font-medium text-sumi/80">
-                        {fmt(
-                          featured.priceRange.minVariantPrice.amount,
-                          featured.priceRange.minVariantPrice.currencyCode
-                        )}
-                      </p>
-                      <div className="pt-3" onClick={(e) => e.stopPropagation()}>
-                        <CardCta product={featured} addToCart={addToCart} cartLoading={cartLoading} />
-                      </div>
-                    </div>
-                  </Reveal>
-                )}
+              <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-14 lg:grid-cols-3">
+                {products.map((product, index) => {
+                  const img = product.featuredImage;
+                  return (
+                    <Reveal key={product.id} delay={index * 60}>
+                      <Link href={`/collectie/${product.handle}`} className="group block">
+                        {/* Image — shared 4:5 ratio, object-cover, sits on the page (no card) */}
+                        <div className="relative aspect-[4/5] overflow-hidden bg-[#ece7df]">
+                          {img?.url ? (
+                            <img
+                              src={shopifyImg(img.url, 900)}
+                              alt={img.altText ?? product.title}
+                              loading={index === 0 ? undefined : "lazy"}
+                              className="absolute inset-0 h-full w-full object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center bg-tsuchi">
+                              <span className="font-kanji text-6xl text-sumi/10">形</span>
+                            </div>
+                          )}
+                        </div>
 
-                <div className="grid gap-8">
-                  {secondary.map((product, index) => (
-                    <Reveal
-                      key={product.id}
-                      as="article"
-                      delay={(index + 1) * 50}
-                      className="product-card group overflow-hidden rounded-[32px] p-8 shadow-soft cursor-pointer"
-                      onClick={() => router.push(`/collectie/${product.handle}`)}
-                    >
-                      <div className="h-56 overflow-hidden rounded-3xl bg-[#f3efe9]">
-                        <ProductCardImage product={product} width={800} />
-                      </div>
-                      <div className="mt-6 space-y-2">
-                        <p className="text-xs uppercase tracking-[0.25em] text-sumi/50">{product.productType}</p>
-                        <p className="text-xl font-display text-sumi">{product.title}</p>
-                        <p className="text-sm font-medium text-sumi/80">
+                        {/* Text — left-aligned under the image */}
+                        <p
+                          className="mt-5 text-[11px] uppercase tracking-[0.28em]"
+                          style={{ color: "color-mix(in srgb, var(--tsuchi), var(--sumi) 35%)" }}
+                        >
+                          {product.productType || "Katachi"}
+                        </p>
+                        <h3 className="mt-2 font-display text-2xl leading-tight text-sumi">
+                          {product.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-sumi/70">
                           {fmt(
                             product.priceRange.minVariantPrice.amount,
                             product.priceRange.minVariantPrice.currencyCode
                           )}
                         </p>
-                        <div className="pt-2" onClick={(e) => e.stopPropagation()}>
-                          <CardCta product={product} addToCart={addToCart} cartLoading={cartLoading} />
-                        </div>
-                      </div>
+                        <span className="mt-3 inline-flex text-xs uppercase tracking-[0.2em] text-sumi/50 opacity-0 transition-opacity duration-[400ms] group-hover:opacity-100 motion-reduce:opacity-100 motion-reduce:transition-none">
+                          View&nbsp;→
+                        </span>
+                      </Link>
                     </Reveal>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
             )}
 
@@ -476,47 +439,5 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
 
       <Footer />
     </div>
-  );
-}
-
-function CardCta({
-  product,
-  addToCart,
-  cartLoading,
-}: {
-  product: ShopifyProduct;
-  addToCart: (variantId: string, quantity?: number) => Promise<void>;
-  cartLoading: boolean;
-}) {
-  const action = getCardAction(product);
-
-  // Echoes the product-page add-to-cart button: solid sumi block, DM Sans
-  // micro-caps, calm hover. DM Sans is the default body font, so no override needed.
-  const buttonClass =
-    "flex h-12 w-full items-center justify-center bg-[#2C2C2C] text-[11px] font-medium uppercase tracking-[0.15em] text-shiro no-underline transition hover:bg-[#1a1a1a]";
-
-  if (action.type === "add") {
-    const soldOut = !action.available;
-    return (
-      <button
-        type="button"
-        className={buttonClass}
-        style={{
-          opacity: cartLoading || soldOut ? 0.5 : 1,
-          cursor: soldOut ? "not-allowed" : cartLoading ? "wait" : "pointer",
-        }}
-        disabled={cartLoading || soldOut}
-        onClick={() => addToCart(action.variantId)}
-      >
-        {soldOut ? "Sold out" : cartLoading ? "Adding…" : "Add to cart"}
-      </button>
-    );
-  }
-
-  // Multiple variants → take the customer to the product page to choose.
-  return (
-    <Link href={action.href} className={buttonClass}>
-      Add to cart
-    </Link>
   );
 }
