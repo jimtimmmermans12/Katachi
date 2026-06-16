@@ -275,14 +275,15 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
                   return (
                     <Reveal key={product.id} delay={index * 60}>
                       <Link href={`/collectie/${product.handle}`} className="group block">
-                        {/* Image — shared 4:5 ratio, object-cover, sits on the page (no card) */}
-                        <div className="relative aspect-[4/5] overflow-hidden bg-[#ece7df]">
+                        {/* Image — shared 4:5 ratio, object-cover, sits on the page (no card).
+                            A 3px radius just takes the hard edge off the corners. */}
+                        <div className="relative aspect-[4/5] overflow-hidden rounded-[3px] bg-[#ece7df]">
                           {img?.url ? (
                             <img
                               src={shopifyImg(img.url, 900)}
                               alt={img.altText ?? product.title}
                               loading={index === 0 ? undefined : "lazy"}
-                              className="absolute inset-0 h-full w-full object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                              className="absolute inset-0 h-full w-full rounded-[3px] object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                             />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center bg-tsuchi">
