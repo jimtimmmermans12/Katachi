@@ -75,25 +75,61 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  // Smooth the loop seam: native `loop` snaps the last frame to the first, so we
-  // fade the video toward the poster underneath over the last/first ~0.7s. The
-  // hard cut lands while the video is ~invisible, reading as a calm breath rather
-  // than a jump. rAF runs only while the video plays and the tab is visible.
-  const videoRef = useRef<HTMLVideoElement>(null);
+  // Seamless loop via a true self-crossfade across two stacked <video> layers.
+  // The clip's end dissolves into its own start: ~0.7s before the primary ends,
+  // the other layer starts from 0 *underneath* it at full opacity while the
+  // primary fades out *on top*. Because the incoming layer is opaque, the poster
+  // never shows through the seam — it stays purely the initial fallback. Roles
+  // swap each loop; the idle layer is paused, so only one decodes outside the
+  // ~0.7s crossfade window. One rAF, gated on tab visibility.
+  const videoRefs = [useRef<HTMLVideoElement>(null), useRef<HTMLVideoElement>(null)];
   useEffect(() => {
     if (!showVideo) return;
-    const v = videoRef.current;
-    if (!v) return;
+    const a = videoRefs[0].current;
+    const b = videoRefs[1].current;
+    if (!a || !b) return;
 
-    const FADE = 0.7; // seconds of fade on each side of the seam
+    const FADE = 0.7; // crossfade length in seconds
     let raf = 0;
+    let front = a; // currently playing toward its end (fades out, on top)
+    let back = b; // the incoming layer (starts from 0, opaque, beneath)
+
+    const setLayer = (el: HTMLVideoElement, opacity: number, z: number) => {
+      el.style.opacity = String(opacity);
+      el.style.zIndex = String(z);
+    };
+
+    // Initial state: front plays from the start and is the only visible layer.
+    front.currentTime = 0;
+    back.currentTime = 0;
+    setLayer(front, 1, 2);
+    setLayer(back, 0, 1);
+    void front.play();
 
     const tick = () => {
-      const d = v.duration;
+      const d = front.duration;
       if (d && Number.isFinite(d)) {
-        const t = v.currentTime;
-        const o = Math.min(t / FADE, (d - t) / FADE, 1);
-        v.style.opacity = String(Math.max(0, o));
+        const rem = d - front.currentTime;
+        if (rem <= FADE) {
+          // Enter / continue the crossfade: incoming opaque beneath, primary fades on top.
+          if (back.paused) {
+            back.currentTime = 0;
+            void back.play();
+          }
+          setLayer(back, 1, 1);
+          setLayer(front, Math.max(0, rem / FADE), 2);
+          if (rem <= 0.03 || front.ended) {
+            // Hand over: reset the outgoing layer and swap roles.
+            front.pause();
+            front.currentTime = 0;
+            setLayer(front, 0, 1);
+            setLayer(back, 1, 2);
+            [front, back] = [back, front];
+          }
+        } else {
+          setLayer(front, 1, 2);
+          setLayer(back, 0, 1);
+        }
       }
       raf = requestAnimationFrame(tick);
     };
@@ -105,7 +141,16 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
     };
-    const onVisibility = () => (document.hidden ? stop() : start());
+    const onVisibility = () => {
+      if (document.hidden) {
+        stop();
+        front.pause();
+        back.pause();
+      } else {
+        void front.play();
+        start();
+      }
+    };
 
     start();
     document.addEventListener("visibilitychange", onVisibility);
@@ -113,6 +158,8 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
       stop();
       document.removeEventListener("visibilitychange", onVisibility);
     };
+    // videoRefs are stable refs; effect re-runs only when the video is (de)activated.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showVideo]);
 
   const featured = products[0] ?? null;
@@ -137,31 +184,33 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
               aria-hidden="true"
               fetchPriority="high"
               className="absolute inset-0 h-full w-full object-cover"
+              style={{ zIndex: 0 }}
             />
-            {showVideo && (
-              <video
-                ref={videoRef}
-                className="absolute inset-0 h-full w-full object-cover"
-                style={{ opacity: 0 }}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                poster={HERO_POSTER}
-                aria-hidden="true"
-                tabIndex={-1}
-              >
-                <source src={HERO_VIDEO_WEBM} type="video/webm" />
-                <source src={HERO_VIDEO_MP4} type="video/mp4" />
-              </video>
-            )}
+            {/* Two stacked layers crossfade end → start for a seamless loop (see effect). */}
+            {showVideo &&
+              videoRefs.map((ref, i) => (
+                <video
+                  key={i}
+                  ref={ref}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  style={{ opacity: 0, zIndex: 1 }}
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-hidden="true"
+                  tabIndex={-1}
+                >
+                  <source src={HERO_VIDEO_WEBM} type="video/webm" />
+                  <source src={HERO_VIDEO_MP4} type="video/mp4" />
+                </video>
+              ))}
             {/* Scrim for legibility — directional so it stays elegant: darkest
                behind the text (lower-left), clearing to light on the right. A
                faint uniform floor guarantees contrast on the brightest frame. */}
             <div
               className="absolute inset-0"
               style={{
+                zIndex: 3,
                 background: [
                   // left → right: deep behind the text, clearing to light on the right
                   "linear-gradient(90deg, rgba(44,44,44,0.74) 0%, rgba(44,44,44,0.55) 32%, rgba(44,44,44,0.18) 64%, rgba(44,44,44,0) 100%)",
@@ -175,7 +224,7 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
               }}
             />
             {/* 形 kanji watermark, light over the scrim */}
-            <div className="pointer-events-none absolute inset-0 flex items-center overflow-hidden">
+            <div className="pointer-events-none absolute inset-0 flex items-center overflow-hidden" style={{ zIndex: 4 }}>
               <span className="hero-kanji select-none font-kanji text-[22rem] leading-none text-shiro opacity-[0.06] -translate-x-8">
                 形
               </span>
