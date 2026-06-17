@@ -22,7 +22,7 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
     new Set(products.map((p) => p.productType.toUpperCase()).filter(Boolean))
   ).sort();
   const filters = ["ALL", ...categories];
-  const showFilters = categories.length > 1;
+  const showFilters = categories.length >= 1;
 
   return (
     <div className="relative overflow-hidden bg-shiro text-sumi">
