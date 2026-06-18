@@ -97,7 +97,7 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
 
   if (images.length === 0) {
     return (
-      <div style={{ width: '100%', aspectRatio: '4/3', background: '#e8e3db', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: '100%', aspectRatio: '4/5', background: '#e8e3db', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <span style={{ fontFamily: 'var(--font-noto-serif-jp)', fontSize: '6rem', color: 'rgba(44,44,44,0.08)' }}>形</span>
       </div>
     );
@@ -107,12 +107,12 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
     <div style={{ userSelect: 'none' }}>
       <style>{SLIDER_CSS}</style>
 
-      {/* Main image area: 4:3 container, all images stacked for crossfade */}
+      {/* Main image area: 4:5 container, all images stacked for crossfade */}
       <div
         style={{
           position: 'relative',
           width: '100%',
-          aspectRatio: '4/3',
+          aspectRatio: '4/5',
           background: '#f0ece6',
           overflow: 'hidden',
           cursor: canHover ? (zoomed ? 'zoom-out' : 'zoom-in') : undefined,
@@ -481,7 +481,7 @@ export default function ProductDetail({
                   style={{ textDecoration: 'none', display: 'block' }}
                   className="group"
                 >
-                  <div style={{ aspectRatio: '4/3', background: '#e8e3db', overflow: 'hidden' }}>
+                  <div style={{ aspectRatio: '4/5', background: '#e8e3db', overflow: 'hidden' }}>
                     {p.featuredImage?.url ? (
                       <img
                         src={shopifyImg(p.featuredImage.url, 800)}
