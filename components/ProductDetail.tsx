@@ -295,13 +295,15 @@ export default function ProductDetail({
         {/* Product layout */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:min-h-[80vh]">
 
-          {/* Image column — slider */}
-          <div className="w-full lg:w-1/2 lg:flex-shrink-0 lg:sticky lg:top-[88px]">
+          {/* Image column — slider. Desktop only: narrower + capped width + padding
+              so the photo feels calmer and in proportion with the text. Mobile
+              (base w-full) is unchanged. */}
+          <div className="w-full lg:w-1/2 lg:max-w-[600px] lg:flex-shrink-0 lg:sticky lg:top-[88px] lg:py-14 lg:pl-14 lg:pr-10">
             <ImageSlider images={galleryImages} title={product.title} />
           </div>
 
           {/* Product details column */}
-          <div className="w-full lg:w-1/2" style={{ padding: '40px 24px 60px', display: 'flex', flexDirection: 'column' }}>
+          <div className="w-full lg:flex-1" style={{ padding: '40px 24px 60px', display: 'flex', flexDirection: 'column' }}>
             <div className="lg:px-12 lg:pt-16 lg:pb-20" style={{ display: 'flex', flexDirection: 'column' }}>
 
               {/* Category */}
