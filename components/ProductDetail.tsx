@@ -17,15 +17,23 @@ function getGalleryForVariant(
   variant: ShopifyVariant,
   productImages: { url: string; altText: string | null }[],
 ): ShopifyGalleryImage[] {
+  // Gallery priority order:
+  // 1. The variant's "Gallery" metafield, if it has images (existing products).
+  // 2. Otherwise all of the product's standard Media images (products without a
+  //    Gallery metafield, e.g. single-variant ones like the Nagomi teapot — this
+  //    must come before the single variant image so the whole Media set shows,
+  //    not just the default variant's one image).
+  // 3. Otherwise the single variant image, as a last resort.
+  // 4. Otherwise nothing.
   const refs = variant.metafield?.references?.edges ?? [];
   if (refs.length > 0) {
     return refs.map((e) => e.node.image);
   }
-  if (variant.image?.url) {
-    return [{ url: variant.image.url, altText: variant.image.altText, width: 0, height: 0 }];
-  }
   if (productImages.length > 0) {
     return productImages.map((img) => ({ url: img.url, altText: img.altText, width: 0, height: 0 }));
+  }
+  if (variant.image?.url) {
+    return [{ url: variant.image.url, altText: variant.image.altText, width: 0, height: 0 }];
   }
   return [];
 }
