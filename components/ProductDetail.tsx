@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
+import { GLAZE_SWATCHES } from '@/lib/glazes';
 import { shopifyImg } from '@/lib/img';
 import type {
   ProductSpecs,
@@ -212,6 +213,94 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
   );
 }
 
+// ── Notify me (sold-out variants) ───────────────────────────────────────────
+
+function NotifyForm({
+  productHandle,
+  productTitle,
+  variantTitle,
+}: {
+  productHandle: string;
+  productTitle: string;
+  variantTitle: string;
+}) {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (status === 'sending') return;
+    setStatus('sending');
+    try {
+      const res = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, productHandle, productTitle, variantTitle }),
+      });
+      if (!res.ok) throw new Error('Request failed');
+      setStatus('done');
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  return (
+    <div>
+      <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.45)', margin: '0 0 10px' }}>
+        Sold out
+      </p>
+      {status === 'done' ? (
+        <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.875rem', lineHeight: 1.7, color: 'rgba(44,44,44,0.7)', margin: 0 }}>
+          Thank you — we&apos;ll be in touch when it returns.
+        </p>
+      ) : (
+        <>
+          <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.875rem', lineHeight: 1.7, color: 'rgba(44,44,44,0.7)', margin: '0 0 14px' }}>
+            We&apos;ll let you know when it returns.
+          </p>
+          <form onSubmit={submit} style={{ display: 'flex', gap: '10px' }}>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Your email address"
+              aria-label="Email address"
+              style={{
+                flex: 1, minWidth: 0, height: '52px',
+                border: '1px solid rgba(44,44,44,0.2)', borderRadius: 0,
+                background: 'transparent', padding: '0 16px',
+                fontFamily: 'var(--font-dm-sans)', fontSize: '0.875rem', color: '#1a1a1a',
+                outline: 'none',
+              }}
+            />
+            <button
+              type="submit"
+              disabled={status === 'sending'}
+              style={{
+                flexShrink: 0, height: '52px', padding: '0 24px',
+                background: '#1a1a1a', color: '#ffffff', border: 'none', borderRadius: 0,
+                fontFamily: 'var(--font-dm-sans)', fontSize: '11px', fontWeight: 500,
+                letterSpacing: '0.15em', textTransform: 'uppercase',
+                cursor: status === 'sending' ? 'wait' : 'pointer',
+                opacity: status === 'sending' ? 0.65 : 1,
+                transition: 'opacity 0.2s',
+              }}
+            >
+              {status === 'sending' ? 'Sending...' : 'Notify me'}
+            </button>
+          </form>
+          {status === 'error' && (
+            <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '11px', lineHeight: 1.5, color: 'rgba(140,58,48,0.9)', margin: '10px 0 0' }}>
+              Something went wrong. Please try again.
+            </p>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 // ── Detail ──────────────────────────────────────────────────────────────────
 
 export default function ProductDetail({
@@ -229,8 +318,10 @@ export default function ProductDetail({
   );
   const { addToCart, isLoading: cartLoading } = useCart();
 
-  // Sticky mobile bar: visible only while the main button is off-screen
-  const mainBtnRef = useRef<HTMLButtonElement | null>(null);
+  // Sticky mobile bar: visible only while the main button is off-screen.
+  // The ref sits on a wrapper div so the observer keeps working when the
+  // button is swapped for the sold-out notify form.
+  const mainBtnRef = useRef<HTMLDivElement | null>(null);
   const [mainBtnVisible, setMainBtnVisible] = useState(true);
 
   useEffect(() => {
@@ -252,6 +343,7 @@ export default function ProductDetail({
   const cartLabel = cartLoading ? 'Adding...' : 'Add to cart';
 
   const selectedVariant = variants.find((v) => v.id === selectedVariantId) ?? variants[0];
+  const soldOut = Boolean(selectedVariant) && !selectedVariant.availableForSale;
   const productImages = product.images?.edges?.map((e) => e.node) ?? [];
   const galleryImages = selectedVariant ? getGalleryForVariant(selectedVariant, productImages) : [];
 
@@ -370,76 +462,155 @@ export default function ProductDetail({
                 </dl>
               </div>
 
-              {/* Variant selector */}
+              {/* Variant selector — round glaze swatches when every variant has a
+                  color in GLAZE_SWATCHES; otherwise the plain text buttons. */}
               {variants.length > 1 && (
                 <div style={{ margin: '0 0 20px' }}>
                   <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.45)', margin: '0 0 12px' }}>
-                    Variant
+                    {variants.every((v) => GLAZE_SWATCHES[v.title]) ? 'Glaze' : 'Variant'}
                   </p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {variants.map((v) => {
-                      const isSelected = v.id === selectedVariantId;
-                      return (
-                        <button
-                          key={v.id}
-                          type="button"
-                          onClick={() => setSelectedVariantId(v.id)}
-                          disabled={!v.availableForSale}
-                          style={{
-                            height: '40px',
-                            padding: '0 20px',
-                            border: isSelected ? '1px solid #1a1a1a' : '1px solid rgba(44,44,44,0.2)',
-                            borderRadius: 0,
-                            background: isSelected ? '#1a1a1a' : 'transparent',
-                            color: isSelected ? '#ffffff' : '#1a1a1a',
-                            fontFamily: 'var(--font-dm-sans)',
-                            fontSize: '11px',
-                            letterSpacing: '0.12em',
-                            textTransform: 'uppercase',
-                            cursor: v.availableForSale ? 'pointer' : 'not-allowed',
-                            opacity: v.availableForSale ? 1 : 0.35,
-                            transition: 'all 0.2s',
-                          }}
-                        >
-                          {v.title}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  {variants.every((v) => GLAZE_SWATCHES[v.title]) ? (
+                    <>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px' }}>
+                        {variants.map((v) => {
+                          const isSelected = v.id === selectedVariantId;
+                          return (
+                            <button
+                              key={v.id}
+                              type="button"
+                              onClick={() => setSelectedVariantId(v.id)}
+                              disabled={!v.availableForSale}
+                              aria-label={v.title}
+                              aria-pressed={isSelected}
+                              title={v.title}
+                              style={{
+                                position: 'relative',
+                                width: '38px',
+                                height: '38px',
+                                padding: 0,
+                                borderRadius: '50%',
+                                background: 'none',
+                                // Selected: fine Sumi ring with 3px of air between ring and swatch.
+                                border: isSelected ? '1px solid rgba(44,44,44,0.75)' : '1px solid transparent',
+                                cursor: v.availableForSale ? 'pointer' : 'not-allowed',
+                                opacity: v.availableForSale ? 1 : 0.35,
+                                transition: 'border-color 0.2s',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <span
+                                aria-hidden="true"
+                                style={{
+                                  width: '30px',
+                                  height: '30px',
+                                  borderRadius: '50%',
+                                  background: GLAZE_SWATCHES[v.title],
+                                  // Hairline keeps light glazes from dissolving into Shiro.
+                                  boxShadow: 'inset 0 0 0 1px rgba(44,44,44,0.15)',
+                                  display: 'block',
+                                }}
+                              />
+                              {!v.availableForSale && (
+                                <span
+                                  aria-hidden="true"
+                                  style={{
+                                    position: 'absolute',
+                                    width: '38px',
+                                    height: '1px',
+                                    background: 'rgba(44,44,44,0.55)',
+                                    transform: 'rotate(-45deg)',
+                                  }}
+                                />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {selectedVariant && (
+                        <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '0.8125rem', letterSpacing: '0.02em', color: 'rgba(44,44,44,0.7)', margin: '12px 0 0' }}>
+                          {selectedVariant.title}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {variants.map((v) => {
+                        const isSelected = v.id === selectedVariantId;
+                        return (
+                          <button
+                            key={v.id}
+                            type="button"
+                            onClick={() => setSelectedVariantId(v.id)}
+                            disabled={!v.availableForSale}
+                            style={{
+                              height: '40px',
+                              padding: '0 20px',
+                              border: isSelected ? '1px solid #1a1a1a' : '1px solid rgba(44,44,44,0.2)',
+                              borderRadius: 0,
+                              background: isSelected ? '#1a1a1a' : 'transparent',
+                              color: isSelected ? '#ffffff' : '#1a1a1a',
+                              fontFamily: 'var(--font-dm-sans)',
+                              fontSize: '11px',
+                              letterSpacing: '0.12em',
+                              textTransform: 'uppercase',
+                              cursor: v.availableForSale ? 'pointer' : 'not-allowed',
+                              opacity: v.availableForSale ? 1 : 0.35,
+                              transition: 'all 0.2s',
+                            }}
+                          >
+                            {v.title}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
 
               {/* Rule */}
               <div style={{ height: '1px', background: 'rgba(44,44,44,0.1)', margin: '0 0 32px' }} />
 
-              {/* Add to cart */}
-              <button
-                ref={mainBtnRef}
-                type="button"
-                onClick={handleAddToCart}
-                disabled={!selectedVariantId || cartLoading}
-                style={{
-                  width: '100%',
-                  height: '52px',
-                  background: '#1a1a1a',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: 0,
-                  fontFamily: 'var(--font-dm-sans)',
-                  fontSize: '11px',
-                  fontWeight: 500,
-                  letterSpacing: '0.15em',
-                  textTransform: 'uppercase',
-                  cursor: cartLoading ? 'wait' : 'pointer',
-                  opacity: (!selectedVariantId || cartLoading) ? 0.65 : 1,
-                  transition: 'opacity 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {cartLabel}
-              </button>
+              {/* Add to cart — or, for a sold-out variant, the notify form.
+                  Keyed by variant id so the form state resets per variant. */}
+              <div ref={mainBtnRef}>
+                {soldOut && selectedVariant ? (
+                  <NotifyForm
+                    key={selectedVariant.id}
+                    productHandle={product.handle}
+                    productTitle={product.title}
+                    variantTitle={selectedVariant.title}
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    disabled={!selectedVariantId || cartLoading}
+                    style={{
+                      width: '100%',
+                      height: '52px',
+                      background: '#1a1a1a',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: 0,
+                      fontFamily: 'var(--font-dm-sans)',
+                      fontSize: '11px',
+                      fontWeight: 500,
+                      letterSpacing: '0.15em',
+                      textTransform: 'uppercase',
+                      cursor: cartLoading ? 'wait' : 'pointer',
+                      opacity: (!selectedVariantId || cartLoading) ? 0.65 : 1,
+                      transition: 'opacity 0.2s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {cartLabel}
+                  </button>
+                )}
+              </div>
 
               {/* Shipping note */}
               <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.38)', margin: '16px 0 0', textAlign: 'center' }}>
@@ -567,7 +738,7 @@ export default function ProductDetail({
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={!selectedVariantId || cartLoading}
+          disabled={soldOut || !selectedVariantId || cartLoading}
           style={{
             flexShrink: 0,
             height: '44px',
@@ -582,11 +753,11 @@ export default function ProductDetail({
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
             cursor: cartLoading ? 'wait' : 'pointer',
-            opacity: (!selectedVariantId || cartLoading) ? 0.65 : 1,
+            opacity: (soldOut || !selectedVariantId || cartLoading) ? 0.65 : 1,
             transition: 'opacity 0.2s',
           }}
         >
-          {cartLabel}
+          {soldOut ? 'Sold out' : cartLabel}
         </button>
       </div>
 

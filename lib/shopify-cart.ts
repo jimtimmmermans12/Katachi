@@ -20,6 +20,7 @@ export type ShopifyCart = {
   id: string;
   checkoutUrl: string;
   totalQuantity: number;
+  note: string | null;
   cost: {
     totalAmount: { amount: string; currencyCode: string };
     subtotalAmount: { amount: string; currencyCode: string };
@@ -65,6 +66,7 @@ function normalizeCart(raw: Record<string, unknown>): ShopifyCart {
     id: raw.id as string,
     checkoutUrl: raw.checkoutUrl as string,
     totalQuantity: raw.totalQuantity as number,
+    note: (raw.note as string | null) ?? null,
     cost: raw.cost as ShopifyCart['cost'],
     lines: lines.edges.map((e) => e.node),
   };
@@ -74,6 +76,7 @@ const CART_FIELDS = `
   id
   checkoutUrl
   totalQuantity
+  note
   cost {
     totalAmount { amount currencyCode }
     subtotalAmount { amount currencyCode }

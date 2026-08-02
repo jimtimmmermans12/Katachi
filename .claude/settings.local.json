@@ -33,7 +33,28 @@
       "Bash(xargs kill)",
       "Bash(node smoke2.js)",
       "Bash(node smoke3.js)",
-      "Bash(curl -s https://katachi-blond.vercel.app/__TRACKED_VAR__)"
+      "Bash(curl -s https://katachi-blond.vercel.app/__TRACKED_VAR__)",
+      "Bash(pkill -f \"next start\")",
+      "Bash(pkill -f \"PORT=3210\")",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} type=%{content_type} size=%{size_download}\\\\n\" https://katachi-blond.vercel.app/hero-katachi.jpg)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(kill 21422)",
+      "Bash(pkill -f \"katachi-chrome-profile\")",
+      "Bash(rm -rf /tmp/katachi-chrome-profile /tmp/cdp-shot*.mjs)",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --disable-gpu --hide-scrollbars --window-size=1440,900 --force-device-scale-factor=1 --screenshot=/tmp/hero-desktop.png --virtual-time-budget=4000 http://localhost:3100/)",
+      "Read(//tmp/**)",
+      "Bash(echo \"desktop $? $\\(stat -f%z /tmp/hero-desktop.png\\)\")",
+      "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --disable-gpu --hide-scrollbars --window-size=390,844 --force-device-scale-factor=2 --screenshot=/tmp/hero-mobile.png --virtual-time-budget=4000 http://localhost:3100/)",
+      "Bash(echo \"mobile $? $\\(stat -f%z /tmp/hero-mobile.png\\)\")",
+      "Bash(pkill -f \"remote-debugging-port\")",
+      "Bash(rm -f /tmp/hero-desktop.png /tmp/hero-mobile.png)",
+      "Read(//Users/siel/Downloads/**)",
+      "Bash(command -v ffmpeg)",
+      "Bash(ffmpeg -version)",
+      "Bash(mv ~/Downloads/7576305-hd_1920_1080_24fps.mp4 /Users/siel/Desktop/Katachi/public/hero.mp4)",
+      "Bash(command -v brew)",
+      "Bash(command -v ffmpeg-static)",
+      "Bash(curl -s \"https://katachi-blond.vercel.app/\")"
     ]
   }
 }

@@ -282,20 +282,24 @@ type ProductByHandleData = {
   product: ShopifyProduct | null;
 };
 
+// Mirrors the mock fallback in getProducts: when the listing degrades to mock
+// products, their detail pages must resolve too — never a dead "not found".
+function mockProductByHandle(handle: string): ShopifyProduct | null {
+  const mock = MOCK_PRODUCTS.find((p) => p.handle === handle) ?? null;
+  if (!mock) return null;
+  return {
+    ...mock,
+    descriptionHtml: `<p>${mock.description}</p>`,
+  };
+}
+
 export async function getProductByHandle(
   handle: string
 ): Promise<ShopifyProduct | null> {
   const { domain, token } = credentials();
 
   if (!domain || !token || token === "your_storefront_access_token_here") {
-    const mock = MOCK_PRODUCTS.find((p) => p.handle === handle) ?? null;
-    if (mock) {
-      return {
-        ...mock,
-        descriptionHtml: `<p>${mock.description}</p>`,
-      };
-    }
-    return null;
+    return mockProductByHandle(handle);
   }
 
   try {
@@ -305,8 +309,8 @@ export async function getProductByHandle(
     );
     return data.product;
   } catch (err) {
-    console.error("Failed to fetch product by handle:", err);
-    return null;
+    console.error("Failed to fetch product by handle, falling back to mock data:", err);
+    return mockProductByHandle(handle);
   }
 }
 

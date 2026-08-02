@@ -24,10 +24,12 @@ const journals = [
   {
     title: "The quiet mechanics of ritual",
     excerpt: "How a slower ritual reshapes everyday life with calm intention.",
+    href: "/journal/the-quiet-mechanics-of-ritual",
   },
   {
-    title: "Material stories in the kitchen",
-    excerpt: "A closer look at craftspeople keeping tradition alive.",
+    title: "On the weight of a good bowl",
+    excerpt: "Why mass and tactility tell you more about an object's character than its appearance.",
+    href: "/journal/on-the-weight-of-a-good-bowl",
   },
 ];
 
@@ -396,7 +398,7 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
                   <p className="font-display text-xs uppercase tracking-[0.28em] text-sumi/50">Journal</p>
                   <h3 className="mt-4 font-display text-3xl text-sumi">{post.title}</h3>
                   <p className="mt-3 text-base leading-8 text-sumi/75">{post.excerpt}</p>
-                  <Link href="/journal" className="mt-5 inline-flex text-xs font-semibold uppercase tracking-[0.2em] text-mori transition hover:text-kin">
+                  <Link href={post.href} className="mt-5 inline-flex text-xs font-semibold uppercase tracking-[0.2em] text-mori transition hover:text-kin">
                     Read more
                   </Link>
                 </Reveal>

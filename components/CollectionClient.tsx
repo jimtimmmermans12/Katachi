@@ -2,15 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import Reveal from "@/components/Reveal";
 import type { ShopifyProduct } from "@/lib/shopify";
 import ProductCardImage from "@/components/ProductCardImage";
 
+function fmt(amount: string, currencyCode: string) {
+  return new Intl.NumberFormat("nl-NL", {
+    style: "currency",
+    currency: currencyCode,
+    minimumFractionDigits: 2,
+  }).format(parseFloat(amount));
+}
+
 export default function CollectionClient({ products }: { products: ShopifyProduct[] }) {
-  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState<string>("ALL");
 
   const filteredProducts = products.filter((product) => {
@@ -38,11 +44,7 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
           </div>
 
           <div className="relative mx-auto max-w-6xl">
-            <motion.div
-              initial={{ opacity: 0, y: 36 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.4, ease: "easeOut" }}
-            >
+            <Reveal immediate>
               <p className="font-display text-xs uppercase tracking-[0.35em] text-sumi/70">選 — A curated collection</p>
               <h1 className="mt-8 text-5xl leading-[0.95] tracking-[-0.03em] text-sumi sm:text-6xl lg:text-7xl font-display">
                 The collection
@@ -50,7 +52,7 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
               <p className="mt-6 max-w-2xl text-base leading-8 text-sumi/80 sm:text-lg">
                 Each object is chosen for its form, craft, and timeless presence. Quiet designs that earn their place in your home.
               </p>
-            </motion.div>
+            </Reveal>
           </div>
         </section>
 
@@ -58,12 +60,7 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
         <section className="border-t border-slate-200/70 bg-white/70 py-12 px-6 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-7xl">
             {showFilters && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.0, ease: "easeOut" }}
-                className="flex flex-wrap gap-4 items-center"
-              >
+              <Reveal immediate className="flex flex-wrap gap-4 items-center">
                 <p className="text-xs uppercase tracking-[0.28em] text-sumi/60 font-display">Filter by:</p>
                 <div className="flex flex-wrap gap-3">
                   {filters.map((filter) => (
@@ -80,7 +77,7 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
                     </button>
                   ))}
                 </div>
-              </motion.div>
+              </Reveal>
             )}
             <p className={`text-sm text-sumi/60 ${showFilters ? "mt-4" : ""}`}>
               {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
@@ -96,56 +93,45 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
                 <p className="text-sumi/60 font-display uppercase tracking-[0.2em]">No products found in this category.</p>
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-14 lg:grid-cols-3">
                 {filteredProducts.map((product, index) => (
-                  <motion.article
-                    key={product.id}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1.2 + index * 0.08, ease: "easeOut" }}
-                    className="group overflow-hidden rounded-[32px] product-card transition hover:shadow-lg cursor-pointer"
-                    onClick={() => router.push(`/collectie/${product.handle}`)}
-                  >
-                    {/* Product Image */}
-                    <div className="relative h-72 overflow-hidden bg-gradient-to-b from-tsuchi to-tsuchi/50">
-                      {product.featuredImage?.url ? (
-                        <ProductCardImage product={product} width={800} />
-                      ) : (
-                        <div className="flex h-full items-center justify-center bg-tsuchi/30">
-                          <span className="text-sumi/20 font-kanji text-6xl">形</span>
-                        </div>
-                      )}
-                    </div>
+                  <Reveal key={product.id} as="article" delay={(index % 3) * 50}>
+                    <Link href={`/collectie/${product.handle}`} className="group block">
+                      {/* Image — same flat 4:5 treatment as the homepage grid:
+                          no card, no border, a 3px radius to soften the corners. */}
+                      <div className="relative aspect-[4/5] overflow-hidden rounded-[3px] bg-[#ece7df]">
+                        {product.featuredImage?.url ? (
+                          <div className="absolute inset-0">
+                            <ProductCardImage product={product} width={900} />
+                          </div>
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center bg-tsuchi">
+                            <span className="font-kanji text-6xl text-sumi/10">形</span>
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Product Info */}
-                    <div className="p-6 space-y-3">
-                      <h3 className="text-xl font-display tracking-tight text-sumi line-clamp-2">
+                      {/* Text — left-aligned under the image */}
+                      <p
+                        className="mt-5 text-[11px] uppercase tracking-[0.28em]"
+                        style={{ color: "color-mix(in srgb, var(--tsuchi), var(--sumi) 35%)" }}
+                      >
+                        {product.productType || "Katachi"}
+                      </p>
+                      <h3 className="mt-2 font-display text-2xl leading-tight text-sumi">
                         {product.title}
                       </h3>
-
-                      {product.productType && (
-                        <p className="text-xs uppercase tracking-[0.28em] text-sumi/60">
-                          {product.productType}
-                        </p>
-                      )}
-
-                      <p className="text-sm leading-6 text-sumi/75 line-clamp-2">
-                        {product.description}
+                      <p className="mt-1 text-sm text-sumi/70">
+                        {fmt(
+                          product.priceRange.minVariantPrice.amount,
+                          product.priceRange.minVariantPrice.currencyCode
+                        )}
                       </p>
-
-                      <div className="pt-2 flex items-baseline justify-between">
-                        <p className="text-lg font-semibold text-sumi">
-                          {new Intl.NumberFormat('nl-NL', { style: 'currency', currency: product.priceRange.minVariantPrice.currencyCode }).format(parseFloat(product.priceRange.minVariantPrice.amount))}
-                        </p>
-                        <Link
-                          href={`/collectie/${product.handle}`}
-                          className="text-xs font-semibold uppercase tracking-[0.2em] text-mori transition hover:text-kin"
-                        >
-                          View →
-                        </Link>
-                      </div>
-                    </div>
-                  </motion.article>
+                      <span className="mt-3 inline-flex text-xs uppercase tracking-[0.2em] text-sumi/50 opacity-0 transition-opacity duration-[400ms] group-hover:opacity-100 motion-reduce:opacity-100 motion-reduce:transition-none">
+                        View&nbsp;→
+                      </span>
+                    </Link>
+                  </Reveal>
                 ))}
               </div>
             )}
@@ -155,18 +141,14 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
         {/* Footer CTA */}
         <section className="border-t border-slate-200/70 bg-white/70 py-16 px-6 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-6xl text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-            >
+            <Reveal>
               <p className="font-display text-3xl uppercase tracking-[0.35em] text-sumi sm:text-4xl">
                 Each piece, carefully chosen.
               </p>
               <p className="mt-6 text-base text-sumi/75 max-w-2xl mx-auto">
                 Objects selected for form, craft, and the quiet they bring to a room.
               </p>
-            </motion.div>
+            </Reveal>
           </div>
         </section>
       </main>

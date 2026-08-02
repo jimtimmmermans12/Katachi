@@ -226,12 +226,13 @@ function ShippingProgress({ subtotal }: { subtotal?: { amount: string; currencyC
       <p style={{
         fontFamily: 'var(--font-dm-sans)', fontSize: '10px',
         letterSpacing: '0.2em', textTransform: 'uppercase',
-        color: unlocked ? 'rgba(74,82,64,0.85)' : 'rgba(44,44,44,0.5)',
+        // Unlocked: Kin darkened toward Sumi so the gold reads at 10px on Shiro.
+        color: unlocked ? 'color-mix(in srgb, var(--kin, #B8A06A), var(--sumi, #2C2C2C) 45%)' : 'rgba(44,44,44,0.5)',
         margin: '0 0 10px',
       }}>
         {unlocked
-          ? 'Free shipping unlocked'
-          : `${remainingFmt} away from free shipping`}
+          ? 'Shipping is on us.'
+          : `${remainingFmt} from complimentary shipping`}
       </p>
       <div style={{
         height: '2px',
@@ -241,7 +242,8 @@ function ShippingProgress({ subtotal }: { subtotal?: { amount: string; currencyC
         <div style={{
           height: '100%',
           width: `${progress * 100}%`,
-          background: unlocked ? 'var(--mori, #4A5240)' : 'rgba(44,44,44,0.55)',
+          // Kin as the completion accent — a fine gold line, per the brand system.
+          background: unlocked ? 'var(--kin, #B8A06A)' : 'rgba(44,44,44,0.55)',
           transition: 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease',
         }} />
       </div>

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { ARTICLES } from "@/lib/journal";
 import { getProducts } from "@/lib/shopify";
 
 const SITE_URL = "https://katachi-blond.vercel.app";
@@ -15,6 +16,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/terms`, changeFrequency: "yearly", priority: 0.2 },
   ];
 
+  const journalRoutes: MetadataRoute.Sitemap = ARTICLES.map((a) => ({
+    url: `${SITE_URL}/journal/${a.slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  }));
+
   let productRoutes: MetadataRoute.Sitemap = [];
   try {
     const products = await getProducts(100);
@@ -27,5 +34,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Sitemap still serves static routes if Shopify is unreachable
   }
 
-  return [...staticRoutes, ...productRoutes];
+  return [...staticRoutes, ...journalRoutes, ...productRoutes];
 }
