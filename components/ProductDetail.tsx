@@ -358,14 +358,15 @@ export default function ProductDetail({
     : null;
 
   // Spec block — units live here so Shopify metafields stay plain numbers.
-  // A null value falls back to a unit-bearing placeholder the merchant can fill in.
-  const specRows: { label: string; value: string | null; placeholder: string }[] = [
-    { label: 'Material', value: specs.material, placeholder: '—' },
-    { label: 'Dimensions', value: specs.diameter ? `⌀ ${specs.diameter} cm` : null, placeholder: '⌀ — cm' },
-    { label: 'Capacity', value: specs.capacity ? `${specs.capacity} ml` : null, placeholder: '— ml' },
-    { label: 'Weight', value: specs.weight ? `${specs.weight} g` : null, placeholder: '— g' },
-    { label: 'Care', value: specs.care, placeholder: '—' },
-  ];
+  // Rows without a value are hidden entirely: placeholder dashes read as a
+  // broken page to customers. Merchants fill the custom.* metafields in Shopify.
+  const specRows = [
+    { label: 'Material', value: specs.material },
+    { label: 'Dimensions', value: specs.diameter ? `⌀ ${specs.diameter} cm` : null },
+    { label: 'Capacity', value: specs.capacity ? `${specs.capacity} ml` : null },
+    { label: 'Weight', value: specs.weight ? `${specs.weight} g` : null },
+    { label: 'Care', value: specs.care },
+  ].filter((row): row is { label: string; value: string } => row.value !== null);
 
   return (
     <div style={{ background: 'var(--shiro, #F7F5F2)', minHeight: '100vh' }}>
@@ -433,34 +434,36 @@ export default function ProductDetail({
                 />
               )}
 
-              {/* Spec block */}
-              <div style={{ margin: '0 0 24px' }}>
-                <div style={{ height: '1px', background: 'rgba(44,44,44,0.1)', margin: '0 0 24px' }} />
-                <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.45)', margin: '0 0 14px' }}>
-                  Details
-                </p>
-                <dl style={{ margin: 0, maxWidth: '480px' }}>
-                  {specRows.map((row) => (
-                    <div
-                      key={row.label}
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: '120px 1fr',
-                        gap: '16px',
-                        padding: '9px 0',
-                        borderBottom: '1px solid rgba(44,44,44,0.06)',
-                      }}
-                    >
-                      <dt style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.45)', lineHeight: 1.7, margin: 0 }}>
-                        {row.label}
-                      </dt>
-                      <dd style={{ margin: 0, fontFamily: 'var(--font-dm-sans)', fontSize: '0.8125rem', letterSpacing: '0.02em', lineHeight: 1.7, color: row.value ? 'rgba(44,44,44,0.85)' : 'rgba(44,44,44,0.3)' }}>
-                        {row.value ?? row.placeholder}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
+              {/* Spec block — omitted entirely when no specs are filled in */}
+              {specRows.length > 0 && (
+                <div style={{ margin: '0 0 24px' }}>
+                  <div style={{ height: '1px', background: 'rgba(44,44,44,0.1)', margin: '0 0 24px' }} />
+                  <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.45)', margin: '0 0 14px' }}>
+                    Details
+                  </p>
+                  <dl style={{ margin: 0, maxWidth: '480px' }}>
+                    {specRows.map((row) => (
+                      <div
+                        key={row.label}
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: '120px 1fr',
+                          gap: '16px',
+                          padding: '9px 0',
+                          borderBottom: '1px solid rgba(44,44,44,0.06)',
+                        }}
+                      >
+                        <dt style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '10px', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(44,44,44,0.45)', lineHeight: 1.7, margin: 0 }}>
+                          {row.label}
+                        </dt>
+                        <dd style={{ margin: 0, fontFamily: 'var(--font-dm-sans)', fontSize: '0.8125rem', letterSpacing: '0.02em', lineHeight: 1.7, color: 'rgba(44,44,44,0.85)' }}>
+                          {row.value}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              )}
 
               {/* Variant selector — round glaze swatches when every variant has a
                   color in GLAZE_SWATCHES; otherwise the plain text buttons. */}
@@ -693,17 +696,19 @@ export default function ProductDetail({
         )}
       </main>
 
-      {/* Sticky add-to-cart bar — mobile only, hidden while main button is on-screen */}
+      {/* Sticky add-to-cart bar — mobile only, hidden while main button is
+          on-screen. Display comes from classes only: an inline `display` would
+          override the md:hidden media query and leak the bar onto desktop.
+          Bottom offset tracks the cookie banner so it never covers the button. */}
       <div
-        className="md:hidden"
+        className="flex md:hidden"
         aria-hidden={mainBtnVisible}
         style={{
           position: 'fixed',
           left: 0,
           right: 0,
-          bottom: 0,
+          bottom: 'var(--cookie-banner-height, 0px)',
           zIndex: 50,
-          display: 'flex',
           alignItems: 'center',
           gap: '14px',
           padding: '12px 16px calc(12px + env(safe-area-inset-bottom))',
@@ -712,7 +717,7 @@ export default function ProductDetail({
           WebkitBackdropFilter: 'blur(12px)',
           borderTop: '1px solid rgba(44,44,44,0.1)',
           transform: mainBtnVisible ? 'translateY(100%)' : 'translateY(0)',
-          transition: 'transform 0.3s ease',
+          transition: 'transform 0.3s ease, bottom 0.3s ease',
           pointerEvents: mainBtnVisible ? 'none' : 'auto',
         }}
       >

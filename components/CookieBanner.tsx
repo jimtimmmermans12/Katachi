@@ -1,18 +1,41 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const CONSENT_KEY = 'katachi_cookie_consent';
 
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!localStorage.getItem(CONSENT_KEY)) {
       setVisible(true);
     }
   }, []);
+
+  // Publish the banner's height as a CSS variable so other fixed bottom
+  // elements (the PDP sticky add-to-cart bar) can sit above it instead of
+  // being covered — the banner would otherwise hide the buy button.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!visible) {
+      root.style.setProperty('--cookie-banner-height', '0px');
+      return;
+    }
+    const el = bannerRef.current;
+    if (!el) return;
+    const update = () =>
+      root.style.setProperty('--cookie-banner-height', `${el.offsetHeight}px`);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.setProperty('--cookie-banner-height', '0px');
+    };
+  }, [visible]);
 
   const choose = (value: 'accepted' | 'declined') => {
     localStorage.setItem(CONSENT_KEY, value);
@@ -23,6 +46,7 @@ export default function CookieBanner() {
 
   return (
     <div
+      ref={bannerRef}
       role="dialog"
       aria-label="Cookie consent"
       style={{
