@@ -62,15 +62,16 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
             {showFilters && (
               <Reveal immediate className="flex flex-wrap gap-4 items-center">
                 <p className="text-xs uppercase tracking-[0.28em] text-sumi/60 font-display">Filter by:</p>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-x-6 gap-y-2">
                   {filters.map((filter) => (
                     <button
                       key={filter}
                       onClick={() => setActiveFilter(filter)}
-                      className={`px-6 py-2 rounded-full text-xs font-semibold uppercase tracking-[0.2em] transition ${
+                      aria-pressed={activeFilter === filter}
+                      className={`px-1 py-2 text-xs font-semibold uppercase tracking-[0.2em] underline-offset-[6px] transition ${
                         activeFilter === filter
-                          ? "bg-mori text-shiro shadow-soft"
-                          : "bg-white border border-sumi/10 text-sumi hover:bg-mori/5"
+                          ? "text-sumi underline decoration-sumi/40"
+                          : "text-sumi/45 hover:text-sumi"
                       }`}
                     >
                       {filter}
@@ -142,7 +143,7 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
         <section className="border-t border-slate-200/70 bg-white/70 py-16 px-6 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-6xl text-center">
             <Reveal>
-              <p className="font-display text-3xl uppercase tracking-[0.35em] text-sumi sm:text-4xl">
+              <p className="font-display text-3xl tracking-tight text-sumi sm:text-4xl">
                 Each piece, carefully chosen.
               </p>
               <p className="mt-6 text-base text-sumi/75 max-w-2xl mx-auto">

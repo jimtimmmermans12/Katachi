@@ -356,50 +356,45 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
           </Reveal>
         </section>
 
-        {/* ── PILLARS ── */}
-        <section id="story" className="bg-white/70 py-12 px-8 sm:px-12 lg:px-16">
+        {/* ── PILLARS ── flat editorial columns, hairline-separated (no cards) */}
+        <section id="story" className="border-t border-b border-sumi/10 py-20 px-8 sm:px-12 lg:px-16">
           <div className="mx-auto max-w-7xl">
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-12 lg:grid-cols-3 lg:gap-16">
               {[
                 { label: "Craft", text: "Material honesty meets Japanese craftsmanship with quiet, considered finishes." },
                 { label: "Intention", text: "Every piece is chosen for form, tactility, and timeless simplicity." },
                 { label: "Silence", text: "Minimal detail, generous emptiness, and spaces that breathe." },
               ].map((pillar, index) => (
-                <Reveal
-                  key={pillar.label}
-                  delay={index * 50}
-                  className="rounded-[32px] border border-slate-200/60 bg-shiro/90 p-8"
-                >
-                  <p className="font-display text-xl uppercase tracking-[0.32em] text-sumi/80">{pillar.label}</p>
-                  <p className="mt-4 text-base leading-8 text-sumi/75">{pillar.text}</p>
+                <Reveal key={pillar.label} delay={index * 50}>
+                  <p className="text-[11px] uppercase tracking-[0.32em] text-sumi/45">{pillar.label}</p>
+                  <p className="mt-4 font-display text-2xl leading-snug text-sumi">{pillar.text}</p>
                 </Reveal>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── JOURNAL ── */}
-        <section id="journal" className="py-12 px-8 sm:px-12 lg:px-16">
+        {/* ── JOURNAL ── flat, hairline-topped entries matching the journal index */}
+        <section id="journal" className="py-20 px-8 sm:px-12 lg:px-16">
           <div className="mx-auto max-w-7xl">
-            <Reveal className="mb-8">
+            <Reveal className="mb-10">
               <p className="font-display text-sm uppercase tracking-[0.35em] text-sumi/60">Journal</p>
               <h2 className="mt-4 font-display text-4xl tracking-tight text-sumi sm:text-5xl">
                 Thoughtful essays and quiet interiors.
               </h2>
             </Reveal>
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-x-16 lg:grid-cols-2">
               {journals.map((post, index) => (
-                <Reveal
-                  key={post.title}
-                  as="article"
-                  delay={index * 50}
-                  className="rounded-[32px] border border-slate-200/70 bg-white/95 p-7 shadow-soft"
-                >
-                  <p className="font-display text-xs uppercase tracking-[0.28em] text-sumi/50">Journal</p>
-                  <h3 className="mt-4 font-display text-3xl text-sumi">{post.title}</h3>
-                  <p className="mt-3 text-base leading-8 text-sumi/75">{post.excerpt}</p>
-                  <Link href={post.href} className="mt-5 inline-flex text-xs font-semibold uppercase tracking-[0.2em] text-mori transition hover:text-kin">
-                    Read more
+                <Reveal key={post.title} as="article" delay={index * 50} className="border-t border-sumi/10">
+                  <Link href={post.href} className="group block py-10">
+                    <p className="text-[10px] uppercase tracking-[0.42em] text-sumi/45">Journal</p>
+                    <h3 className="mt-4 font-display text-3xl text-sumi transition-colors group-hover:text-mori">
+                      {post.title}
+                    </h3>
+                    <p className="mt-3 text-base leading-8 text-sumi/75">{post.excerpt}</p>
+                    <span className="mt-5 inline-flex text-xs font-semibold uppercase tracking-[0.2em] text-sumi/45 transition group-hover:text-mori">
+                      Read more →
+                    </span>
                   </Link>
                 </Reveal>
               ))}

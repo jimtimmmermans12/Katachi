@@ -33,9 +33,9 @@ export default function Journal() {
               transition={{ duration: 1.4, ease: "easeOut" }}
             >
               <p className="font-body text-xs uppercase tracking-[0.38em] text-sumi/50">
-                KATACHI 形 — Journal
+                形 — Essays on form and living
               </p>
-              <h1 className="mt-8 font-display text-[clamp(4rem,12vw,9rem)] leading-[0.88] tracking-[-0.025em] text-sumi">
+              <h1 className="mt-8 font-display text-5xl leading-[0.95] tracking-[-0.03em] text-sumi sm:text-6xl lg:text-7xl">
                 Journal
               </h1>
               <p className="mt-9 font-display text-xl italic leading-[1.6] text-sumi/65 sm:text-2xl">

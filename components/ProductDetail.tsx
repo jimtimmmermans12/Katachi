@@ -631,7 +631,7 @@ export default function ProductDetail({
         {/* Editorial strip */}
         <div style={{ borderTop: '1px solid rgba(44,44,44,0.1)', borderBottom: '1px solid rgba(44,44,44,0.1)', padding: '48px 24px', background: 'rgba(255,255,255,0.5)' }}>
           <p style={{ fontFamily: 'var(--font-cormorant-garamond), Georgia, serif', fontSize: 'clamp(1.2rem, 3vw, 1.6rem)', fontWeight: 300, fontStyle: 'italic', letterSpacing: '0.01em', color: 'rgba(44,44,44,0.55)', maxWidth: '680px', margin: '0 auto', textAlign: 'center', lineHeight: 1.6 }}>
-            "Objects earn their place through quiet usefulness and the beauty of honest material."
+            &ldquo;Objects earn their place through quiet usefulness and the beauty of honest material.&rdquo;
           </p>
         </div>
 
@@ -645,44 +645,32 @@ export default function ProductDetail({
             }}>
               You may also like
             </p>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-              gap: '24px',
-            }}>
+            {/* Same flat card language as the home/collection grids */}
+            <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2">
               {related.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/collectie/${p.handle}`}
-                  style={{ textDecoration: 'none', display: 'block' }}
-                  className="group"
-                >
-                  <div style={{ aspectRatio: '4/5', background: '#e8e3db', overflow: 'hidden' }}>
+                <Link key={p.id} href={`/collectie/${p.handle}`} className="group block no-underline">
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-[3px] bg-[#ece7df]">
                     {p.featuredImage?.url ? (
                       <img
                         src={shopifyImg(p.featuredImage.url, 800)}
                         alt={p.featuredImage.altText ?? p.title}
                         loading="lazy"
-                        className="transition duration-500 group-hover:scale-105"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        className="absolute inset-0 h-full w-full rounded-[3px] object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                       />
                     ) : (
-                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <span style={{ fontFamily: 'var(--font-noto-serif-jp)', fontSize: '2rem', color: 'rgba(44,44,44,0.1)' }}>形</span>
+                      <div className="absolute inset-0 flex items-center justify-center bg-tsuchi">
+                        <span className="font-kanji text-6xl text-sumi/10">形</span>
                       </div>
                     )}
                   </div>
-                  <p style={{
-                    fontFamily: 'var(--font-cormorant-garamond), Georgia, serif',
-                    fontSize: '1.15rem', fontWeight: 400, color: '#1a1a1a',
-                    margin: '14px 0 4px', lineHeight: 1.3,
-                  }}>
-                    {p.title}
+                  <p
+                    className="mt-5 text-[11px] uppercase tracking-[0.28em]"
+                    style={{ color: 'color-mix(in srgb, var(--tsuchi), var(--sumi) 35%)' }}
+                  >
+                    {p.productType || 'Katachi'}
                   </p>
-                  <p style={{
-                    fontFamily: 'var(--font-dm-sans)', fontSize: '12px',
-                    letterSpacing: '0.08em', color: 'rgba(44,44,44,0.55)', margin: 0,
-                  }}>
+                  <h3 className="mt-2 font-display text-2xl leading-tight text-sumi">{p.title}</h3>
+                  <p className="mt-1 text-sm text-sumi/70">
                     {new Intl.NumberFormat('nl-NL', {
                       style: 'currency',
                       currency: p.priceRange.minVariantPrice.currencyCode,
