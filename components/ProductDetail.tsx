@@ -145,7 +145,8 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
         ))}
       </div>
 
-      {/* Thumbnail strip — only when 2+ images */}
+      {/* Thumbnail strip — only when 2+ images. With 5+, a soft right-edge
+          fade hints that the strip scrolls (no scrollbar is shown). */}
       {images.length > 1 && (
         <div
           className="ks-thumbstrip"
@@ -156,6 +157,12 @@ function ImageSlider({ images, title }: { images: ShopifyGalleryImage[]; title: 
             overflowX: 'auto',
             scrollbarWidth: 'none',
             paddingBottom: '4px',
+            ...(images.length > 4
+              ? {
+                  maskImage: 'linear-gradient(90deg, black 88%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(90deg, black 88%, transparent 100%)',
+                }
+              : {}),
           }}
         >
           {images.map((img, i) => (

@@ -106,7 +106,7 @@ export default function Contact() {
                     Received
                   </p>
                   <p className="mt-6 font-display text-3xl text-sumi">
-                    Thank you. We'll be in touch.
+                    Thank you. We&apos;ll be in touch.
                   </p>
                   <p className="mt-4 text-base leading-[1.8] text-sumi/65">
                     We respond within 2 business days.

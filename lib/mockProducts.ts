@@ -7,9 +7,9 @@ const price = (amount: string) => ({
   minVariantPrice: { amount, currencyCode: "EUR" },
 });
 
-const image = (path: string): any => ({
+const image = (path: string): NonNullable<ShopifyProduct["featuredImage"]> => ({
   url: path,
-  altText: path.split("/").pop()?.replace(".svg", ""),
+  altText: path.split("/").pop()?.replace(".svg", "") ?? null,
 });
 
 const variant = (n: number, amount: string): NonNullable<ShopifyProduct["variants"]> => ({

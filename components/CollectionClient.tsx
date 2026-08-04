@@ -59,30 +59,33 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
         {/* Filter Section */}
         <section className="border-t border-sumi/10 py-12 px-6 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-7xl">
-            {showFilters && (
-              <Reveal immediate className="flex flex-wrap gap-4 items-center">
-                <p className="text-xs uppercase tracking-[0.28em] text-sumi/60 font-display">Filter by:</p>
-                <div className="flex flex-wrap gap-x-6 gap-y-2">
-                  {filters.map((filter) => (
-                    <button
-                      key={filter}
-                      onClick={() => setActiveFilter(filter)}
-                      aria-pressed={activeFilter === filter}
-                      className={`px-1 py-2 text-xs font-semibold uppercase tracking-[0.2em] underline-offset-[6px] transition ${
-                        activeFilter === filter
-                          ? "text-sumi underline decoration-sumi/40"
-                          : "text-sumi/45 hover:text-sumi"
-                      }`}
-                    >
-                      {filter}
-                    </button>
-                  ))}
-                </div>
-              </Reveal>
-            )}
-            <p className={`text-sm text-sumi/60 ${showFilters ? "mt-4" : ""}`}>
-              {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
-            </p>
+            {/* Count lives in the bar itself so it doesn't jump lines when filtering */}
+            <Reveal immediate className="flex flex-wrap items-center gap-4">
+              {showFilters && (
+                <>
+                  <p className="text-xs uppercase tracking-[0.28em] text-sumi/60 font-display">Filter by:</p>
+                  <div className="flex flex-wrap gap-x-6 gap-y-2">
+                    {filters.map((filter) => (
+                      <button
+                        key={filter}
+                        onClick={() => setActiveFilter(filter)}
+                        aria-pressed={activeFilter === filter}
+                        className={`px-1 py-2 text-xs font-semibold uppercase tracking-[0.2em] underline-offset-[6px] transition ${
+                          activeFilter === filter
+                            ? "text-sumi underline decoration-sumi/40"
+                            : "text-sumi/45 hover:text-sumi"
+                        }`}
+                      >
+                        {filter}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+              <p className="ml-auto text-xs uppercase tracking-[0.2em] text-sumi/40">
+                {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
+              </p>
+            </Reveal>
           </div>
         </section>
 
