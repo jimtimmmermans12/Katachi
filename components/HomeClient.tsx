@@ -7,6 +7,7 @@ import Nav from "@/components/Nav";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import Reveal from "@/components/Reveal";
 import { shopifyImg } from "@/lib/img";
+import { ARTICLES } from "@/lib/journal";
 import type { ShopifyProduct } from "@/lib/shopify";
 
 // Poster shows instantly and stands in for the video on reduced-motion / slow
@@ -20,18 +21,13 @@ const HERO_VIDEO_MP4 = "/hero.mp4";
 // only (never the solid Shiro primary button).
 const HERO_TEXT_SHADOW = "0 1px 28px rgba(28,28,28,0.35)";
 
-const journals = [
-  {
-    title: "The quiet mechanics of ritual",
-    excerpt: "How a slower ritual reshapes everyday life with calm intention.",
-    href: "/journal/the-quiet-mechanics-of-ritual",
-  },
-  {
-    title: "On the weight of a good bowl",
-    excerpt: "Why mass and tactility tell you more about an object's character than its appearance.",
-    href: "/journal/on-the-weight-of-a-good-bowl",
-  },
-];
+// Journal teasers come straight from the article data so the homepage
+// never drifts out of sync with the journal itself.
+const journals = ARTICLES.slice(0, 2).map((a) => ({
+  title: a.title,
+  excerpt: a.excerpt,
+  href: `/journal/${a.slug}`,
+}));
 
 function fmt(amount: string, currencyCode: string) {
   return new Intl.NumberFormat("nl-NL", {
