@@ -72,7 +72,7 @@ export default function Filosofie() {
         </section>
 
         {/* Opening paragraph */}
-        <section className="border-t border-slate-200/60 bg-white/65 px-6 py-20 sm:px-10 lg:px-14">
+        <section className="border-t border-sumi/10 bg-white/65 px-6 py-20 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-3xl">
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -94,7 +94,7 @@ export default function Filosofie() {
                 initial={{ opacity: 0, y: 32 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.1, ease: "easeOut", delay: index * 0.1 }}
-                className={`flex flex-col gap-12 border-t border-slate-200/60 py-20 sm:py-28 lg:items-center lg:gap-20 lg:flex-row${section.reverse ? " lg:flex-row-reverse" : ""}`}
+                className={`flex flex-col gap-12 border-t border-sumi/10 py-20 sm:py-28 lg:items-center lg:gap-20 lg:flex-row${section.reverse ? " lg:flex-row-reverse" : ""}`}
               >
                 {/* Text */}
                 <div className="flex-1 max-w-xl">
@@ -124,7 +124,7 @@ export default function Filosofie() {
         </section>
 
         {/* Closing tagline + CTA — more breathing room */}
-        <section className="border-t border-slate-200/60 bg-white/65 px-6 py-48 sm:px-10 lg:px-14 lg:py-56">
+        <section className="border-t border-sumi/10 bg-white/65 px-6 py-48 sm:px-10 lg:px-14 lg:py-56">
           <div className="mx-auto max-w-5xl text-center">
             <motion.p
               initial={{ opacity: 0, y: 20 }}

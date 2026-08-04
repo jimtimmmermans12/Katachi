@@ -47,7 +47,7 @@ export default async function JournalArticle({ params }: Props) {
 
       <main>
         {/* Header */}
-        <header className="px-6 pt-40 pb-16 sm:px-10 lg:px-14">
+        <header className="px-6 pt-32 pb-12 sm:px-10 sm:pt-40 sm:pb-16 lg:px-14">
           <Reveal immediate className="mx-auto max-w-3xl">
             <p className="font-body text-[10px] uppercase tracking-[0.42em] text-sumi/45">
               {article.category}
@@ -62,14 +62,12 @@ export default async function JournalArticle({ params }: Props) {
         </header>
 
         {/* Body */}
-        <article className="border-t border-slate-200/60 px-6 py-20 sm:px-10 lg:px-14">
+        <article className="border-t border-sumi/10 px-6 py-20 sm:px-10 lg:px-14">
           <Reveal immediate className="mx-auto max-w-2xl">
-            <p className="font-display text-xl italic leading-[1.7] text-sumi/70 sm:text-2xl">
-              {article.excerpt}
-            </p>
-            <div className="mt-12 space-y-7">
+            {/* No repeated excerpt lead — the reader just saw it on the index card. */}
+            <div className="space-y-7">
               {article.content.map((paragraph, i) => (
-                <p key={i} className="text-base leading-[1.9] text-sumi/75">
+                <p key={i} className="text-[1.0625rem] leading-[1.9] text-sumi/75">
                   {paragraph}
                 </p>
               ))}
@@ -78,7 +76,7 @@ export default async function JournalArticle({ params }: Props) {
         </article>
 
         {/* Footer navigation */}
-        <div className="border-t border-slate-200/60 px-6 py-16 sm:px-10 lg:px-14">
+        <div className="border-t border-sumi/10 px-6 py-16 sm:px-10 lg:px-14">
           <Reveal className="mx-auto flex max-w-2xl flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
             <Link
               href="/journal"

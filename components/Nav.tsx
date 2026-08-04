@@ -41,7 +41,7 @@ export default function Nav({ overlay = false }: { overlay?: boolean }) {
       animate={{ opacity: 1 }}
       className={`fixed inset-x-0 z-50 transition duration-500 ${
         scrolled
-          ? "bg-white/72 backdrop-blur-xl border-b border-slate-200/70 shadow-soft"
+          ? "bg-white/72 backdrop-blur-xl border-b border-sumi/10 shadow-soft"
           : "bg-transparent"
       }`}
       style={
@@ -95,7 +95,7 @@ export default function Nav({ overlay = false }: { overlay?: boolean }) {
                 position: 'absolute', top: '1px', right: '1px',
                 minWidth: '16px', height: '16px',
                 background: 'var(--mori, #4A5240)',
-                color: '#fff',
+                color: 'var(--shiro)',
                 borderRadius: '999px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'var(--font-dm-sans)', fontSize: '9px', fontWeight: 600,
@@ -137,7 +137,7 @@ export default function Nav({ overlay = false }: { overlay?: boolean }) {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="absolute right-6 top-6 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 text-sumi"
+                className="absolute right-6 top-6 inline-flex h-10 w-10 items-center justify-center rounded-full border border-sumi/20 text-sumi"
               >
                 ✕
               </button>

@@ -13,7 +13,7 @@ export default function Journal() {
 
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden px-6 pt-40 pb-28 sm:px-10 lg:px-14">
+        <section className="relative overflow-hidden px-6 pt-32 pb-16 sm:px-10 sm:pt-40 sm:pb-24 lg:px-14">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none"
@@ -46,7 +46,7 @@ export default function Journal() {
         </section>
 
         {/* Article grid — published first, then upcoming */}
-        <section className="border-t border-slate-200/60 px-6 py-24 sm:px-10 lg:px-14">
+        <section className="border-t border-sumi/10 px-6 py-24 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-6xl">
             <div className="grid gap-x-16 gap-y-2 md:grid-cols-2">
               {ARTICLES.map((article, index) => (
@@ -55,13 +55,13 @@ export default function Journal() {
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.9, ease: "easeOut", delay: index * 0.08 }}
-                  className="border-t border-slate-200/70 py-14"
+                  className="border-t border-sumi/10 py-14"
                 >
                   <Link href={`/journal/${article.slug}`} className="group block">
                     <p className="font-body text-[10px] uppercase tracking-[0.42em] text-sumi/45">
                       {article.category}
                     </p>
-                    <h2 className="mt-5 font-display text-3xl leading-[1.1] tracking-[-0.01em] text-sumi sm:text-4xl">
+                    <h2 className="mt-5 font-display text-3xl leading-[1.1] tracking-[-0.01em] text-sumi transition-colors group-hover:text-mori sm:text-4xl">
                       {article.title}
                     </h2>
                     <p className="mt-5 text-base leading-[1.85] text-sumi/70">
@@ -87,18 +87,18 @@ export default function Journal() {
                     ease: "easeOut",
                     delay: (ARTICLES.length + index) * 0.08,
                   }}
-                  className="border-t border-slate-200/70 py-14"
+                  className="border-t border-sumi/10 py-14 opacity-55"
                 >
                   <p className="font-body text-[10px] uppercase tracking-[0.42em] text-sumi/45">
                     {article.category}
                   </p>
-                  <h2 className="mt-5 font-display text-3xl leading-[1.1] tracking-[-0.01em] text-sumi sm:text-4xl">
+                  <h2 className="mt-4 font-display text-2xl leading-[1.15] tracking-[-0.01em] text-sumi/80 sm:text-3xl">
                     {article.title}
                   </h2>
-                  <p className="mt-5 text-base leading-[1.85] text-sumi/70">
+                  <p className="mt-4 text-base leading-[1.85] text-sumi/60">
                     {article.excerpt}
                   </p>
-                  <p className="mt-7 font-body text-[11px] uppercase tracking-[0.28em] text-sumi/30">
+                  <p className="mt-6 font-body text-[11px] uppercase tracking-[0.28em] text-sumi/35">
                     Coming soon
                   </p>
                 </motion.article>

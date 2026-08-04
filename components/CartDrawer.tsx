@@ -58,7 +58,7 @@ export default function CartDrawer() {
             <h2 style={{
               fontFamily: 'var(--font-cormorant-garamond), Georgia, serif',
               fontSize: '1.5rem', fontWeight: 400, letterSpacing: '0.01em',
-              color: '#1a1a1a', margin: 0,
+              color: 'var(--sumi)', margin: 0,
             }}>
               Your selection
             </h2>
@@ -149,7 +149,7 @@ export default function CartDrawer() {
               </span>
               <span style={{
                 fontFamily: 'var(--font-cormorant-garamond), Georgia, serif',
-                fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a',
+                fontSize: '1.5rem', fontWeight: 400, color: 'var(--sumi)',
               }}>
                 {formattedTotal}
               </span>
@@ -160,7 +160,7 @@ export default function CartDrawer() {
               href={cart!.checkoutUrl}
               style={{
                 display: 'block', width: '100%', textAlign: 'center',
-                background: '#1a1a1a', color: '#F7F5F2',
+                background: 'var(--sumi)', color: '#F7F5F2',
                 padding: '16px 24px',
                 fontFamily: 'var(--font-dm-sans)', fontSize: '11px', fontWeight: 500,
                 letterSpacing: '0.22em', textTransform: 'uppercase',
@@ -346,7 +346,7 @@ function LineItem({
         {/* Title */}
         <p style={{
           fontFamily: 'var(--font-cormorant-garamond), Georgia, serif',
-          fontSize: '1.05rem', fontWeight: 400, color: '#1a1a1a',
+          fontSize: '1.05rem', fontWeight: 400, color: 'var(--sumi)',
           margin: 0, lineHeight: 1.25,
           whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
         }}>
@@ -381,7 +381,7 @@ function LineItem({
               borderTop: '1px solid rgba(44,44,44,0.18)',
               borderBottom: '1px solid rgba(44,44,44,0.18)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'var(--font-dm-sans)', fontSize: '12px', color: '#1a1a1a',
+              fontFamily: 'var(--font-dm-sans)', fontSize: '12px', color: 'var(--sumi)',
             }}>
               {line.quantity}
             </span>
@@ -396,7 +396,7 @@ function LineItem({
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <span style={{
               fontFamily: 'var(--font-dm-sans)', fontSize: '12px',
-              color: '#1a1a1a', letterSpacing: '0.02em',
+              color: 'var(--sumi)', letterSpacing: '0.02em',
             }}>
               {lineTotal}
             </span>
@@ -442,7 +442,7 @@ function StepBtn({
         border: '1px solid rgba(44,44,44,0.18)', borderRadius: 0,
         background: 'none', cursor: disabled ? 'wait' : 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: '#1a1a1a', fontSize: '14px', lineHeight: 1,
+        color: 'var(--sumi)', fontSize: '14px', lineHeight: 1,
         fontFamily: 'var(--font-dm-sans)',
         transition: 'background 0.15s',
       }}

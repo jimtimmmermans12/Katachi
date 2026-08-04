@@ -270,7 +270,7 @@ function NotifyForm({
                 flex: 1, minWidth: 0, height: '52px',
                 border: '1px solid rgba(44,44,44,0.2)', borderRadius: 0,
                 background: 'transparent', padding: '0 16px',
-                fontFamily: 'var(--font-dm-sans)', fontSize: '0.875rem', color: '#1a1a1a',
+                fontFamily: 'var(--font-dm-sans)', fontSize: '0.875rem', color: 'var(--sumi)',
                 outline: 'none',
               }}
             />
@@ -279,7 +279,7 @@ function NotifyForm({
               disabled={status === 'sending'}
               style={{
                 flexShrink: 0, height: '52px', padding: '0 24px',
-                background: '#1a1a1a', color: '#ffffff', border: 'none', borderRadius: 0,
+                background: 'var(--sumi)', color: 'var(--shiro)', border: 'none', borderRadius: 0,
                 fontFamily: 'var(--font-dm-sans)', fontSize: '11px', fontWeight: 500,
                 letterSpacing: '0.15em', textTransform: 'uppercase',
                 cursor: status === 'sending' ? 'wait' : 'pointer',
@@ -407,7 +407,7 @@ export default function ProductDetail({
               )}
 
               {/* Title */}
-              <h1 style={{ fontFamily: 'var(--font-cormorant-garamond), Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontWeight: 400, lineHeight: 1.05, letterSpacing: '-0.02em', color: '#1a1a1a', margin: '0 0 8px' }}>
+              <h1 style={{ fontFamily: 'var(--font-cormorant-garamond), Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontWeight: 400, lineHeight: 1.05, letterSpacing: '-0.02em', color: 'var(--sumi)', margin: '0 0 8px' }}>
                 {product.title}
               </h1>
 
@@ -421,7 +421,7 @@ export default function ProductDetail({
 
               {/* Price */}
               {amount && (
-                <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '1rem', letterSpacing: '0.12em', color: '#1a1a1a', margin: '0 0 16px' }}>
+                <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '1rem', letterSpacing: '0.12em', color: 'var(--sumi)', margin: '0 0 16px' }}>
                   {amount}
                 </p>
               )}
@@ -550,10 +550,10 @@ export default function ProductDetail({
                             style={{
                               height: '40px',
                               padding: '0 20px',
-                              border: isSelected ? '1px solid #1a1a1a' : '1px solid rgba(44,44,44,0.2)',
+                              border: isSelected ? '1px solid var(--sumi)' : '1px solid rgba(44,44,44,0.2)',
                               borderRadius: 0,
-                              background: isSelected ? '#1a1a1a' : 'transparent',
-                              color: isSelected ? '#ffffff' : '#1a1a1a',
+                              background: isSelected ? 'var(--sumi)' : 'transparent',
+                              color: isSelected ? 'var(--shiro)' : 'var(--sumi)',
                               fontFamily: 'var(--font-dm-sans)',
                               fontSize: '11px',
                               letterSpacing: '0.12em',
@@ -593,8 +593,8 @@ export default function ProductDetail({
                     style={{
                       width: '100%',
                       height: '52px',
-                      background: '#1a1a1a',
-                      color: '#ffffff',
+                      background: 'var(--sumi)',
+                      color: 'var(--shiro)',
                       border: 'none',
                       borderRadius: 0,
                       fontFamily: 'var(--font-dm-sans)',
@@ -712,7 +712,7 @@ export default function ProductDetail({
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{
             fontFamily: 'var(--font-cormorant-garamond), Georgia, serif',
-            fontSize: '1rem', fontWeight: 400, color: '#1a1a1a',
+            fontSize: '1rem', fontWeight: 400, color: 'var(--sumi)',
             margin: 0, lineHeight: 1.2,
             whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
           }}>
@@ -736,8 +736,8 @@ export default function ProductDetail({
             flexShrink: 0,
             height: '44px',
             padding: '0 22px',
-            background: '#1a1a1a',
-            color: '#ffffff',
+            background: 'var(--sumi)',
+            color: 'var(--shiro)',
             border: 'none',
             borderRadius: 0,
             fontFamily: 'var(--font-dm-sans)',

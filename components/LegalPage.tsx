@@ -52,12 +52,12 @@ export default function LegalPage({
         </section>
 
         {/* Sections — narrow column, generous whitespace */}
-        <section className="border-t border-slate-200/60 px-6 py-8 sm:px-10 lg:px-14">
+        <section className="border-t border-sumi/10 px-6 py-8 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-3xl">
             {sections.map((section, index) => (
               <div
                 key={section.heading}
-                className={`py-14 ${index > 0 ? "border-t border-slate-200/60" : ""}`}
+                className={`py-14 ${index > 0 ? "border-t border-sumi/10" : ""}`}
               >
                 <p className="font-body text-[10px] uppercase tracking-[0.45em] text-sumi/35">
                   {String(index + 1).padStart(2, "0")}
@@ -76,7 +76,7 @@ export default function LegalPage({
         </section>
 
         {/* Contact + updated */}
-        <section className="border-t border-slate-200/60 bg-white/65 px-6 py-20 sm:px-10 lg:px-14">
+        <section className="border-t border-sumi/10 bg-white/65 px-6 py-20 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-3xl">
             <p className="font-display text-xl leading-[1.6] text-sumi/80 sm:text-2xl">
               Questions? Contact us at{" "}

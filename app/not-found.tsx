@@ -11,13 +11,29 @@ export default function NotFound() {
         <p className="text-[10px] uppercase tracking-[0.28em]" style={{ color: "rgba(44,44,44,0.4)" }}>
           This page could not be found
         </p>
-        <Link
-          href="/"
-          className="text-[10px] uppercase tracking-[0.22em] no-underline"
-          style={{ color: "rgba(44,44,44,0.55)" }}
-        >
-          ← Back to the beginning
-        </Link>
+        <div className="flex items-center gap-8">
+          <Link
+            href="/"
+            className="text-[10px] uppercase tracking-[0.22em] no-underline"
+            style={{ color: "rgba(44,44,44,0.55)" }}
+          >
+            ← Back home
+          </Link>
+          <Link
+            href="/collectie"
+            className="text-[10px] uppercase tracking-[0.22em] no-underline"
+            style={{ color: "rgba(44,44,44,0.55)" }}
+          >
+            Collection
+          </Link>
+          <Link
+            href="/journal"
+            className="text-[10px] uppercase tracking-[0.22em] no-underline"
+            style={{ color: "rgba(44,44,44,0.55)" }}
+          >
+            Journal
+          </Link>
+        </div>
       </div>
       <Footer />
     </div>

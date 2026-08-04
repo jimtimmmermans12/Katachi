@@ -25,7 +25,7 @@ export default function NewsletterSignup() {
   }
 
   return (
-    <section className="border-t border-slate-200/60 px-8 py-24 sm:px-12 lg:px-16 lg:py-28">
+    <section className="border-t border-sumi/10 px-8 py-24 sm:px-12 lg:px-16 lg:py-28">
       <div className="mx-auto max-w-2xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -60,7 +60,7 @@ export default function NewsletterSignup() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="w-full border-b border-slate-300 bg-transparent pb-3 pt-1 text-center text-base text-sumi placeholder:text-sumi/30 focus:border-sumi focus:outline-none transition-colors duration-200"
+                  className="w-full border-b border-sumi/20 bg-transparent pb-3 pt-1 text-center text-base text-sumi placeholder:text-sumi/30 focus:border-sumi focus:outline-none transition-colors duration-200"
                 />
               </div>
               <button

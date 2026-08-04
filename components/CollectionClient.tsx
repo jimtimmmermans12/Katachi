@@ -36,7 +36,7 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
 
       <main className="relative isolate overflow-hidden">
         {/* Header Section */}
-        <section className="relative min-h-[50vh] px-6 pt-28 pb-16 sm:px-10 lg:px-14">
+        <section className="relative px-6 pt-32 pb-16 sm:px-10 sm:pt-40 sm:pb-20 lg:px-14">
           <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
             <span className="hero-kanji select-none text-[18rem] font-kanji leading-none opacity-10">
               選
@@ -57,7 +57,7 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
         </section>
 
         {/* Filter Section */}
-        <section className="border-t border-slate-200/70 bg-white/70 py-12 px-6 sm:px-10 lg:px-14">
+        <section className="border-t border-sumi/10 py-12 px-6 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-7xl">
             {showFilters && (
               <Reveal immediate className="flex flex-wrap gap-4 items-center">
@@ -140,7 +140,7 @@ export default function CollectionClient({ products }: { products: ShopifyProduc
         </section>
 
         {/* Footer CTA */}
-        <section className="border-t border-slate-200/70 bg-white/70 py-16 px-6 sm:px-10 lg:px-14">
+        <section className="border-t border-sumi/10 py-16 px-6 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-6xl text-center">
             <Reveal>
               <p className="font-display text-3xl tracking-tight text-sumi sm:text-4xl">

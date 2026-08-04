@@ -223,7 +223,7 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
                 <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
                   <Link
                     href="/collectie"
-                    className="inline-flex items-center justify-center whitespace-nowrap rounded-none border-none bg-shiro px-10 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-sumi transition hover:bg-white"
+                    className="inline-flex items-center justify-center whitespace-nowrap rounded-none border-none bg-shiro px-10 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-sumi transition hover:bg-shiro/90"
                   >
                     View the collection
                   </Link>
@@ -241,7 +241,7 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
         </section>
 
         {/* ── TRUST BAR ── */}
-        <Reveal as="div" className="border-t border-b border-slate-200/70 bg-white/60 py-4 px-8 sm:px-12 lg:px-16">
+        <Reveal as="div" className="border-t border-b border-sumi/10 py-4 px-8 sm:px-12 lg:px-16">
           <p
             className="mx-auto max-w-7xl text-center"
             style={{
@@ -252,7 +252,8 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
               color: "rgba(44,44,44,0.48)",
             }}
           >
-            Free shipping from €100&nbsp;&nbsp;·&nbsp;&nbsp;30-day returns&nbsp;&nbsp;·&nbsp;&nbsp;Secure checkout
+            Free shipping from €100&nbsp;&nbsp;·&nbsp;&nbsp;30-day returns
+            <span className="hidden sm:inline">&nbsp;&nbsp;·&nbsp;&nbsp;Secure checkout</span>
           </p>
         </Reveal>
 
@@ -334,7 +335,7 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
         </section>
 
         {/* ── MANIFESTO ── */}
-        <section className="bg-shiro px-8 py-[120px] sm:px-12 lg:px-16">
+        <section className="bg-shiro px-8 py-24 sm:py-32 sm:px-12 lg:px-16">
           <Reveal className="mx-auto max-w-3xl text-center">
             <p className="font-display text-xs uppercase tracking-[0.35em] text-sumi/45">
               On objects and intention
@@ -403,7 +404,7 @@ export default function HomeClient({ products }: { products: ShopifyProduct[] })
         </section>
 
         {/* ── INSTAGRAM ── */}
-        <section className="bg-white/70 py-20 px-8 sm:px-12 lg:px-16">
+        <section className="py-20 px-8 sm:px-12 lg:px-16">
           <div className="mx-auto max-w-7xl text-center">
             <Reveal>
               <p className="font-display text-xs uppercase tracking-[0.35em] text-sumi/50">Instagram</p>

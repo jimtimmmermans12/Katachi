@@ -74,7 +74,7 @@ export default function Contact() {
         </section>
 
         {/* Contact content */}
-        <section className="border-t border-slate-200/60 px-6 py-24 sm:px-10 lg:px-14">
+        <section className="border-t border-sumi/10 px-6 py-24 sm:px-10 lg:px-14">
           <div className="mx-auto max-w-3xl">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -100,7 +100,7 @@ export default function Contact() {
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8 }}
-                  className="border-t border-slate-200/60 py-20"
+                  className="border-t border-sumi/10 py-20"
                 >
                   <p className="font-body text-[10px] uppercase tracking-[0.42em] text-sumi/45">
                     Received
@@ -113,7 +113,7 @@ export default function Contact() {
                   </p>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="border-t border-slate-200/60 pt-16 space-y-10">
+                <form onSubmit={handleSubmit} className="border-t border-sumi/10 pt-16 space-y-10">
                   <div className="grid gap-10 sm:grid-cols-2">
                     <div className="space-y-3">
                       <label
@@ -128,7 +128,7 @@ export default function Contact() {
                         type="text"
                         required
                         autoComplete="name"
-                        className="w-full border-b border-slate-300 bg-transparent pb-3 pt-1 text-base text-sumi placeholder:text-sumi/30 focus:border-sumi focus:outline-none transition-colors duration-200"
+                        className="w-full border-b border-sumi/20 bg-transparent pb-3 pt-1 text-base text-sumi placeholder:text-sumi/30 focus:border-sumi focus:outline-none transition-colors duration-200"
                         placeholder="Your name"
                       />
                     </div>
@@ -146,7 +146,7 @@ export default function Contact() {
                         type="email"
                         required
                         autoComplete="email"
-                        className="w-full border-b border-slate-300 bg-transparent pb-3 pt-1 text-base text-sumi placeholder:text-sumi/30 focus:border-sumi focus:outline-none transition-colors duration-200"
+                        className="w-full border-b border-sumi/20 bg-transparent pb-3 pt-1 text-base text-sumi placeholder:text-sumi/30 focus:border-sumi focus:outline-none transition-colors duration-200"
                         placeholder="your@email.com"
                       />
                     </div>
@@ -164,7 +164,7 @@ export default function Contact() {
                       name="message"
                       rows={6}
                       required
-                      className="w-full resize-none border-b border-slate-300 bg-transparent pb-3 pt-1 text-base text-sumi placeholder:text-sumi/30 focus:border-sumi focus:outline-none transition-colors duration-200"
+                      className="w-full resize-none border-b border-sumi/20 bg-transparent pb-3 pt-1 text-base text-sumi placeholder:text-sumi/30 focus:border-sumi focus:outline-none transition-colors duration-200"
                       placeholder="Tell us what's on your mind."
                     />
                   </div>

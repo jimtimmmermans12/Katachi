@@ -3,7 +3,7 @@ import Reveal from "@/components/Reveal";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200/60 bg-shiro/95 px-6 pt-16 pb-10 text-sumi">
+    <footer className="border-t border-sumi/10 bg-shiro/95 px-6 pt-16 pb-10 text-sumi">
       <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <Reveal className="space-y-4">
           <p className="font-display text-2xl uppercase tracking-[0.25em] text-sumi">KATACHI</p>
@@ -39,7 +39,7 @@ export default function Footer() {
         </Reveal>
       </div>
 
-      <div className="mx-auto mt-10 max-w-7xl border-t border-slate-200/50 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="mx-auto mt-10 max-w-7xl border-t border-sumi/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p
           style={{
             fontFamily: "var(--font-dm-sans)",
